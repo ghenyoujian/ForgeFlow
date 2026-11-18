@@ -1,0 +1,20 @@
+[package]
+name = "forgeflow-git"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+libc.workspace = true
+forgeflow-domain = { path = "../domain" }
+forgeflow-evidence = { path = "../evidence" }
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

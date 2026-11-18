@@ -1,0 +1,6 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object","additionalProperties":false,"x-status":"DRAFT_NOT_ADMITTED",
+  "required":["profile_id","registration_id","provider","profile_version","binary_digest","adapter_digest","configuration_digest","capabilities","support_status","evidence_status"],
+  "properties":{"profile_id":{"type":"string","minLength":1},"registration_id":{"type":"string","minLength":1},"provider":{"type":"string","minLength":1},"profile_version":{"type":"string","minLength":1},"binary_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},"adapter_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},"configuration_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},"capabilities":{"type":"object"},"support_status":{"enum":["SUPPORTED","PARTIAL","UNSUPPORTED","UNKNOWN"]},"evidence_status":{"enum":["VERIFIED","FAILED","INCONCLUSIVE","NOT_RUN","BLOCKED"]}}
+}

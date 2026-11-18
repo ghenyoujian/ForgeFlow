@@ -1,0 +1,18 @@
+name: forgeflow-ecp-test
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_USER: forgeflow_ecp
+      POSTGRES_PASSWORD: forgeflow_ecp_disposable_only
+      POSTGRES_DB: forgeflow_ecp
+    ports:
+      - "127.0.0.1:55433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forgeflow_ecp -d forgeflow_ecp"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    profiles: [ecp-test]

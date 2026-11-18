@@ -1,0 +1,28 @@
+[package]
+name = "forgeflow-api"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+[dependencies]
+forgeflow-domain = { path = "../domain" }
+forgeflow-store = { path = "../store" }
+forgeflow-planner = { path = "../planner" }
+forgeflow-scheduler = { path = "../scheduler" }
+forgeflow-executors = { path = "../executors" }
+forgeflow-git = { path = "../git" }
+forgeflow-evidence = { path = "../evidence" }
+forgeflow-runtime = { path = "../runtime" }
+axum.workspace = true
+async-trait.workspace = true
+chrono.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+tokio.workspace = true
+futures.workspace = true
+libc.workspace = true
+tower-http.workspace = true
+uuid.workspace = true
+tracing.workspace = true
+argon2 = "0.5"
+forgeflow-gateway = { path = "../gateway" }

@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX one_active_managed_project_per_root ON projects((data->>'root_path')) WHERE authority_mode='MANAGED' AND archived=false;
+ALTER TABLE projects ADD CONSTRAINT project_data_identity CHECK(data->>'project_id'=project_id AND data->>'authority_mode'=authority_mode AND (data->>'revision')::bigint=revision AND (data->>'paused')::boolean=paused AND (data->>'archived')::boolean=archived AND data->>'root_path' IS NOT NULL AND data->>'root_path' LIKE '/%');

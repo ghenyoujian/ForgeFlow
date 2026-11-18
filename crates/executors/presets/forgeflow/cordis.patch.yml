@@ -1,0 +1,191 @@
+- id: subagent
+  disabled: false
+- id: subagent-spawn-in-process
+  disabled: false
+- id: subagent-fork-in-process
+  disabled: false
+- id: tool-subagent
+  disabled: false
+  config:
+    provider: spawn
+    toolName: subagent
+    backgroundMode: one-shot
+    enableRunInBackground: false
+    maxDepth: 2
+- id: tool-subagent-fork
+  disabled: false
+  config:
+    provider: fork
+    toolName: subagent_fork
+    backgroundMode: one-shot
+    enableRunInBackground: false
+    maxDepth: 2
+- id: tool-subagent-control
+  disabled: true
+- id: tool-subagent-list-agents
+  disabled: true
+- id: workflow-ptc
+  disabled: false
+  config:
+    provider: spawn
+    maxConcurrentAgents: 32
+    maxTotalAgents: 10000
+- id: tool-workflow
+  disabled: false
+  config:
+    enableRunInBackground: false
+- id: goal
+  disabled: false
+- id: tool-goal
+  disabled: false
+- id: goal-round-driver
+  disabled: true
+- id: plan-mode
+  disabled: false
+- id: tool-todo
+  disabled: false
+- id: skill
+  disabled: false
+- id: skill-filesystem
+  disabled: false
+- id: tool-skill
+  disabled: false
+- id: session-query-sqlite
+  disabled: false
+- id: session-checkpoint-policy
+  disabled: false
+- id: compaction-basic
+  disabled: false
+- id: tool-result-pruner
+  disabled: false
+- id: tool-plugin-manager
+  disabled: false
+- insert:
+  - id: agent-team
+    name: '@deepseek-ai/dsh-experimental-agent-team'
+    config:
+      maxMembers: 128
+      maxTasks: 10000
+      maxPendingMessagesPerMember: 64
+      maxMessageBytes: 65536
+      disposalTimeoutMs: 5000
+  - id: tool-agent-team
+    name: '@deepseek-ai/dsh-experimental-tool-agent-team'
+    config:
+      freshProvider: spawn
+      forkProvider: fork
+  - id: agent-preset-registry
+    name: '@deepseek-ai/dsh-agent-preset-registry'
+    config:
+      default: forgeflow-lead-v1
+  - id: preset-forgeflow-lead-v1
+    name: '@deepseek-ai/dsh-agent-preset'
+    config:
+      id: forgeflow-lead-v1
+      name: ForgeFlow · 研发负责人
+      description: Execute only the controller-approved finite project task, within
+        the declared write set, resource budget and model route. Use the project-provided
+        roster. Every native child and model request requires canonical admission.
+        Native completion is a claim; independent verification and Git integration
+        determine acceptance. Preserve failures and unknown usage. Never invent completion,
+        process identities, model calls or evidence. Use fresh teammates when changing
+        roles.
+      order: 0
+      plugins:
+      - id: forgeflow-persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: Execute only the controller-approved finite project task, within
+            the declared write set, resource budget and model route. Use the project-provided
+            roster. Every native child and model request requires canonical admission.
+            Native completion is a claim; independent verification and Git integration
+            determine acceptance. Preserve failures and unknown usage. Never invent
+            completion, process identities, model calls or evidence. Use fresh teammates
+            when changing roles.
+          complete: false
+          includeRuntimeContext: true
+  - id: preset-forgeflow-owner-v1
+    name: '@deepseek-ai/dsh-agent-preset'
+    config:
+      id: forgeflow-owner-v1
+      name: ForgeFlow · 领域负责人
+      description: Execute only the controller-approved finite project task, within
+        the declared write set, resource budget and model route. Use the project-provided
+        roster. Every native child and model request requires canonical admission.
+        Native completion is a claim; independent verification and Git integration
+        determine acceptance. Preserve failures and unknown usage. Never invent completion,
+        process identities, model calls or evidence. Use fresh teammates when changing
+        roles.
+      order: 1
+      plugins:
+      - id: forgeflow-persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: Execute only the controller-approved finite project task, within
+            the declared write set, resource budget and model route. Use the project-provided
+            roster. Every native child and model request requires canonical admission.
+            Native completion is a claim; independent verification and Git integration
+            determine acceptance. Preserve failures and unknown usage. Never invent
+            completion, process identities, model calls or evidence. Use fresh teammates
+            when changing roles.
+          complete: false
+          includeRuntimeContext: true
+  - id: preset-forgeflow-implementer-v1
+    name: '@deepseek-ai/dsh-agent-preset'
+    config:
+      id: forgeflow-implementer-v1
+      name: ForgeFlow · 专业实现
+      description: Execute only the controller-approved finite project task, within
+        the declared write set, resource budget and model route. Use the project-provided
+        roster. Every native child and model request requires canonical admission.
+        Native completion is a claim; independent verification and Git integration
+        determine acceptance. Preserve failures and unknown usage. Never invent completion,
+        process identities, model calls or evidence. Use fresh teammates when changing
+        roles.
+      order: 2
+      plugins:
+      - id: forgeflow-persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: Execute only the controller-approved finite project task, within
+            the declared write set, resource budget and model route. Use the project-provided
+            roster. Every native child and model request requires canonical admission.
+            Native completion is a claim; independent verification and Git integration
+            determine acceptance. Preserve failures and unknown usage. Never invent
+            completion, process identities, model calls or evidence. Use fresh teammates
+            when changing roles.
+          complete: false
+          includeRuntimeContext: true
+  - id: preset-forgeflow-verifier-v1
+    name: '@deepseek-ai/dsh-agent-preset'
+    config:
+      id: forgeflow-verifier-v1
+      name: ForgeFlow · 独立验收
+      description: Execute only the controller-approved finite project task, within
+        the declared write set, resource budget and model route. Use the project-provided
+        roster. Every native child and model request requires canonical admission.
+        Native completion is a claim; independent verification and Git integration
+        determine acceptance. Preserve failures and unknown usage. Never invent completion,
+        process identities, model calls or evidence. Use fresh teammates when changing
+        roles.
+      order: 3
+      plugins:
+      - id: forgeflow-persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: Execute only the controller-approved finite project task, within
+            the declared write set, resource budget and model route. Use the project-provided
+            roster. Every native child and model request requires canonical admission.
+            Native completion is a claim; independent verification and Git integration
+            determine acceptance. Preserve failures and unknown usage. Never invent
+            completion, process identities, model calls or evidence. Use fresh teammates
+            when changing roles.
+          complete: false
+          includeRuntimeContext: true
+  - id: forgeflow-team-binding
+    name: ./team-binding.mjs
+    config:
+      schema_version: forgeflow.dsh-team-binding.v1
+      default_root_position_id: null
+      require_fresh_for_role_change: true
+      bindings: []

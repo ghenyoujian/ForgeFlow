@@ -1,0 +1,19 @@
+{
+  "schema_version": "forgeflow.native-provider-policy.v1",
+  "id": "glm-5.3-max.v1",
+  "provider": "newapi",
+  "model": "glm-5.3",
+  "api": "anthropic-messages",
+  "thinking_type": "enabled",
+  "effort": "max",
+  "max_output_tokens": 131072,
+  "input": ["text"],
+  "source_urls": [
+    "https://docs.z.ai/guides/llm/glm-5.3",
+    "https://docs.z.ai/guides/capabilities/thinking-mode",
+    "https://github.com/QuantumNous/new-api/blob/main/relaykit/dto/claude.go"
+  ],
+  "scope": "Explicit GLM-5.3 Max request over the approved NewAPI Anthropic route. The upstream model enforces thinking; an SDK off setting cannot disable it. Max is an effort, not a model-name suffix. Neither request normalization nor documented model limits prove this deployment honors them; the genuine business attempt and trusted response receipt provide that evidence.",
+  "thinking_budget": "No separate GLM thinking-token budget is documented here. The canonical grant caps the combined response. SDK-only adaptive/display/budget knobs are replaced by enabled thinking plus explicit Max effort, without changing prompts, tools, model, route, or the canonical total ceiling.",
+  "model_fallback": false
+}

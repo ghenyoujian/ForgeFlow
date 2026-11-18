@@ -1,0 +1,325 @@
+{
+  "schema_version": "forgeflow.personal-site-tutorial.v1",
+  "title": "从个人网站开始，和你的 Agent 团队一起交付",
+  "goal": "以个人网站练习 UI、前后端、动效、协作、排程与部署的完整编排。",
+  "roles": [
+    {
+      "id": "design",
+      "name": "UI 设计",
+      "include": [
+        "design/"
+      ]
+    },
+    {
+      "id": "frontend",
+      "name": "前端开发",
+      "include": [
+        "web/"
+      ]
+    },
+    {
+      "id": "backend",
+      "name": "后端开发",
+      "include": [
+        "server/"
+      ]
+    },
+    {
+      "id": "motion",
+      "name": "动效与响应",
+      "include": [
+        "motion/"
+      ]
+    },
+    {
+      "id": "quality",
+      "name": "独立验证",
+      "include": [
+        "tests/"
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "部署与交付",
+      "include": [
+        "deploy/"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "brief",
+      "title": "明确受众与网站目标",
+      "role": "design",
+      "depends_on": [],
+      "write_set": [
+        "design/brief.md"
+      ],
+      "outcome": "写清个人介绍、作品集、联系表单三个核心路径；明确不做的功能。",
+      "acceptance": "受众、内容清单、成功标准均有可检验描述",
+      "estimate_hours": 1
+    },
+    {
+      "id": "ui",
+      "title": "信息架构与 UI 规范",
+      "role": "design",
+      "depends_on": [
+        "brief"
+      ],
+      "write_set": [
+        "design/ui-spec.md",
+        "design/tokens.json"
+      ],
+      "outcome": "设计首页、作品详情、联系页；定义黑白灰色板、字号、间距、组件状态和焦点。",
+      "acceptance": "桌面与 390px 手机稿包含加载、空、错误、成功状态",
+      "estimate_hours": 2
+    },
+    {
+      "id": "api",
+      "title": "前后端 API 合同",
+      "role": "backend",
+      "depends_on": [
+        "brief"
+      ],
+      "write_set": [
+        "server/contracts/openapi.yaml"
+      ],
+      "outcome": "约定 GET /api/projects 与 POST /api/contact；字段、错误码、请求限制、隐私和存储策略。",
+      "acceptance": "前后端都评审请求响应样例；禁止把服务端密钥送到浏览器",
+      "estimate_hours": 2
+    },
+    {
+      "id": "shell",
+      "title": "前端布局与路由",
+      "role": "frontend",
+      "depends_on": [
+        "ui",
+        "api"
+      ],
+      "write_set": [
+        "web/src/App.tsx",
+        "web/src/styles.css"
+      ],
+      "outcome": "根据 UI 规范建立首页、作品详情、联系页；提供骨架屏和错误重试。",
+      "acceptance": "键盘可导航，路由可直接打开，语义标签和焦点可见",
+      "estimate_hours": 2
+    },
+    {
+      "id": "data",
+      "title": "后端内容与联系接口",
+      "role": "backend",
+      "depends_on": [
+        "api"
+      ],
+      "write_set": [
+        "server/src/app.ts",
+        "server/src/contact.ts"
+      ],
+      "outcome": "实现数据校验、联系表单限流、参数化数据库访问、健康检查与日志脱敏。",
+      "acceptance": "错误请求被拒绝；邮件未配置时不能显示已发送成功",
+      "estimate_hours": 2
+    },
+    {
+      "id": "content",
+      "title": "作品集与联系表单",
+      "role": "frontend",
+      "depends_on": [
+        "shell",
+        "data"
+      ],
+      "write_set": [
+        "web/src/Portfolio.tsx",
+        "web/src/Contact.tsx"
+      ],
+      "outcome": "按合同接入真实 API，表单显示提交中、成功与错误，防止重复提交。",
+      "acceptance": "断网后保留输入，可重试且不会重复发送",
+      "estimate_hours": 2
+    },
+    {
+      "id": "motion",
+      "title": "动效与响应式规范",
+      "role": "motion",
+      "depends_on": [
+        "ui"
+      ],
+      "write_set": [
+        "motion/spec.md",
+        "motion/transitions.css"
+      ],
+      "outcome": "定义 120–220ms 过渡、抽屉进出和触控反馈；支持 prefers-reduced-motion。",
+      "acceptance": "手机无横向溢出；减少动画时功能完整且不强制移动内容",
+      "estimate_hours": 2
+    },
+    {
+      "id": "motion-integrate",
+      "title": "整合动效与无障碍",
+      "role": "frontend",
+      "depends_on": [
+        "content",
+        "motion"
+      ],
+      "write_set": [
+        "web/src/motion.css"
+      ],
+      "outcome": "将经过评审的动效样式接入前端；检查 focus、hover、触摸和等待反馈。",
+      "acceptance": "点击立即反馈，动画不拦截操作；键盘可关闭弹层并返回焦点",
+      "estimate_hours": 2
+    },
+    {
+      "id": "api-test",
+      "title": "验证 API 与权限",
+      "role": "quality",
+      "depends_on": [
+        "data"
+      ],
+      "write_set": [
+        "tests/api.test.ts"
+      ],
+      "outcome": "针对输入边界、限流、错误恢复、数据库迁移和凭据泄露做独立测试。",
+      "acceptance": "留下原始命令与结果，失败项有可复现步骤",
+      "estimate_hours": 2
+    },
+    {
+      "id": "browser-test",
+      "title": "浏览器与性能验证",
+      "role": "quality",
+      "depends_on": [
+        "motion-integrate",
+        "api-test"
+      ],
+      "write_set": [
+        "tests/browser.spec.ts"
+      ],
+      "outcome": "在桌面、手机、深浅色、缩放、键盘和减少动画设置下测试完整路径。",
+      "acceptance": "页面截图、性能环境与真实接口证据可追溯",
+      "estimate_hours": 2
+    },
+    {
+      "id": "staging",
+      "title": "准备预发布部署",
+      "role": "delivery",
+      "depends_on": [
+        "browser-test"
+      ],
+      "write_set": [
+        "deploy/Dockerfile",
+        "deploy/compose.yaml",
+        "deploy/README.md"
+      ],
+      "outcome": "构建前后端镜像，使用环境变量注入密钥；配置 HTTPS、健康检查与回滚。",
+      "acceptance": "预发布 URL 可访问，构建可重复，敏感配置不进入 Git",
+      "estimate_hours": 2
+    },
+    {
+      "id": "release",
+      "title": "发布审批与回滚演练",
+      "role": "delivery",
+      "depends_on": [
+        "staging"
+      ],
+      "write_set": [
+        "deploy/release-checklist.md"
+      ],
+      "outcome": "由用户确认域名、成本、公开内容与部署目标后发布；记录版本、探针和回滚步骤。",
+      "acceptance": "公开发布取得明确授权；结果由实际部署探针确认",
+      "estimate_hours": 2
+    }
+  ],
+  "lessons": [
+    {
+      "id": "workspace",
+      "title": "创建工作区，邀请协作者",
+      "summary": "先明确谁能查看、编辑和管理。",
+      "steps": [
+        "注册个人账号后，系统创建独立工作区；也可以从工作区菜单新建。",
+        "在「工作区与成员」生成编辑者或查看者邀请，复制链接给协作者。邀请有效期 7 天且只能由一个账号接受。",
+        "协作者进入同一工作区后，其 DSH Agent 才能加入同一项目的协作目录。"
+      ],
+      "check": "两个账号可以看到共同项目，并且看不到对方其他工作区的项目。"
+    },
+    {
+      "id": "brief",
+      "title": "把个人网站目标拆成任务",
+      "summary": "从结果出发，先定边界，再定技术。",
+      "steps": [
+        "案例目标：个人介绍、作品集与联系表单，适配桌面和手机。",
+        "点击「创建案例项目」导入 12 张任务卡、6 个岗位及依赖。导入内容均为草案。",
+        "在规划页调整标题、验收标准、依赖和负责人；先预览影响，再集中保存。"
+      ],
+      "check": "每张卡有唯一岗位、明确交付物和验收标准；没有互相等待的环。"
+    },
+    {
+      "id": "design",
+      "title": "编排 UI、前端、后端和动效",
+      "summary": "用合同与目录边界支持并行开发。",
+      "steps": [
+        "UI 岗位负责 design/，先交付页面结构、设计变量和各种交互状态。",
+        "后端先产出 API 合同；UI 与 API 确定后，前后端分别在 web/ 与 server/ 实现。",
+        "动效岗位在 motion/ 提出规范，由前端负责接入，避免两位 Agent 同时改同一文件。",
+        "独立验证岗位写 tests/；部署岗位在验证通过后处理 deploy/。"
+      ],
+      "check": "前后端约定字段和错误处理；每个文件的写入责任清楚。"
+    },
+    {
+      "id": "schedule",
+      "title": "比较排程与团队容量",
+      "summary": "先看到依赖和资源影响，再调整。",
+      "steps": [
+        "在规划页切换任务表、看板或依赖图；查看 API 合同与 UI 设计形成的并行分支。",
+        "在排程页填写估算，比较关键路径、基线和当前草案。",
+        "默认保留 128 个上下文与 32 个活跃档位；准备执行前由部署管理员核对内存、Worker 与供应商限制。容量设置本身不启动模型。"
+      ],
+      "check": "瓶颈、前置任务与待决策项均可定位，计划变更不修改已有执行历史。"
+    },
+    {
+      "id": "plugin",
+      "title": "安装 DSH 配套插件",
+      "summary": "每个人连接自己的 DSH，身份由项目凭证绑定。",
+      "steps": [
+        "在项目「Agent 通讯」为自己的 DSH 生成连接凭证；只在本机保存，8 小时后重新签发。",
+        "下载插件包，运行 forgeflow.mjs install 并指定当前 DSH 的 node_modules 和单独安装目录。安装器生成 Cordis 增量 patch。",
+        "把凭证通过 FORGEFLOW_CONNECTOR_TOKEN 或 0600 凭证文件提供给插件，勿写入提示词、截图或 Git。",
+        "先运行 doctor；它核对连接、目录权限和 SDK，不调用模型，也不会启动工作流。"
+      ],
+      "check": "doctor 成功；另一账号的 Agent 显示其真实所属账号。"
+    },
+    {
+      "id": "workflow",
+      "title": "装载个人网站 workflow",
+      "summary": "把编排脚本交给 DSH 原生引擎。",
+      "steps": [
+        "插件包包含 personal-site.workflow.js；先使用 forgeflow_workflow_preview 查看脚本哈希、12 个阶段和任务边界。",
+        "在 DSH 中使用原生 workflow 工具，装载该脚本并保持 args.execute=false，验证参数与阶段；此模式不会调用子 Agent。",
+        "需要真实执行时，先在 ForgeFlow 完成草案检查与审定，由管理员绑定冻结执行档案和 Worker，并确认模型额度与工具权限。",
+        "真实执行由原有 ForgeFlow 执行入口准入；原生 workflow 的子 Agent、工具和文件权限仍由 DSH 与受管桥限制。不要把插件连接成功当作执行授权。"
+      ],
+      "check": "准备、装载、启动、接收消息和验收分别有真实记录。"
+    },
+    {
+      "id": "collaboration",
+      "title": "让不同用户的 Agent 通讯",
+      "summary": "用持久消息交换边界、合同与阻塞。",
+      "steps": [
+        "每个 DSH Agent 调用 forgeflow_identity 自动登记其 SDK 身份，使用 forgeflow_agents 查找同项目协作者。",
+        "通过 forgeflow_send 发送文字或结构化合同摘要，保留 client_message_id；重试时使用同一 ID。",
+        "接收方调用 forgeflow_inbox，处理后显式 forgeflow_ack；接收回执不代表工作完成。",
+        "回复沿用 thread_id 与 reply_to；在项目通讯页实时查看谁发给谁、是否收到和需要什么决策。"
+      ],
+      "check": "两位用户可互发消息、回复、重放和确认收到；冒用发送者与跨项目投递被拒绝。"
+    },
+    {
+      "id": "control",
+      "title": "实时调整、验证与部署",
+      "summary": "先沟通变更，再形成新草案。",
+      "steps": [
+        "发现阻塞时发出原因、影响对象和需要的决策；在通讯页向负责 Agent 发送明确调整。消息不会自动启动接收方模型。",
+        "在规划检查器连续编辑；影响预览后保存新草案。版本冲突保留输入，重新读取后再预览。",
+        "停止或取消已有执行必须走原有执行控制；等待服务端确认资源释放，勿用聊天回执代替停止证明。",
+        "验证通过后按部署卡核对域名、费用、密钥、HTTPS、回滚与探针。公开发布须由项目负责人明确确认。"
+      ],
+      "check": "每次调整可追溯到消息、计划版本、执行记录与独立验证证据。"
+    }
+  ],
+  "execution": "draft_only",
+  "protocol": "forgeflow.agent-network.v1"
+}

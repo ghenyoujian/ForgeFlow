@@ -1,0 +1,42 @@
+.task-inspector-content { min-width: 0; }
+.task-inspector-context { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; color: var(--muted); font-size: 11px; }
+.task-inspector-outcome { margin: 0 0 18px; color: var(--text); font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.task-inspector-section { min-width: 0; padding: 16px; margin: 14px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel3); }
+.task-inspector-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.task-inspector-heading h3 { margin: 0; font-size: 13px; font-weight: 550; }
+.task-inspector-heading > span:not(.status-badge) { color: var(--muted); font-size: 10px; }
+.task-inspector-section > p { margin: 0; font-size: 12px; line-height: 1.8; color: var(--muted); }
+.task-inspector-section .task-inspector-no-attempt { color: var(--text); }
+.task-inspector-section .task-inspector-history-note { padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--line); font-size: 11px; }
+.task-inspector-runs-link { display: inline-block; margin-top: 12px; font-size: 12px; }
+.task-inspector-content .table-wrap { max-width: 100%; margin: 12px 0 0; }
+.task-inspector-content .table-wrap table { min-width: 0; width: 100%; table-layout: fixed; font-size: 11px; }
+.task-inspector-content .table-wrap th, .task-inspector-content .table-wrap td { min-width: 0; padding: 10px 7px; white-space: normal; overflow-wrap: anywhere; vertical-align: top; }
+.task-inspector-content .table-wrap th:first-child, .task-inspector-content .table-wrap td:first-child { position: static; min-width: 0; width: 42%; background: transparent; }
+.task-inspector-content .table-wrap th:nth-child(2), .task-inspector-content .table-wrap td:nth-child(2) { width: 20%; }
+.task-inspector-content .table-wrap th:nth-child(3), .task-inspector-content .table-wrap td:nth-child(3) { width: 38%; }
+.task-inspector-content .table-wrap code { font-size: 10px; white-space: normal; overflow-wrap: anywhere; }
+.task-inspector-content .table-wrap td small { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; }
+.task-inspector-content .table-wrap .status-badge { max-width: 100%; padding: 3px 6px; font-size: 10px; white-space: normal; line-height: 1.5; }
+.task-inspector-ownership { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 8px 12px; margin: 20px 0; font-size: 12px; }
+.task-inspector-ownership dt, .task-inspector-identity dt { color: var(--muted); }
+.task-inspector-ownership dd, .task-inspector-identity dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.task-inspector-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 0 0 10px; }
+.task-inspector-actions button, .task-inspector-actions a { font-size: 11px; }
+.task-inspector-details { margin-top: 12px; }
+.task-inspector-details > summary { font-size: 12px; line-height: 1.6; }
+.task-inspector-identity { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 14px 0 0; font-size: 11px; }
+.task-inspector-identity dd > code { display: block; margin-bottom: 7px; overflow-wrap: anywhere; }
+.task-inspector-copy { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.task-inspector-copy > code { flex: 1 1 200px; min-width: 0; font-size: 11px; white-space: normal; overflow-wrap: anywhere; }
+.task-inspector-copy > button { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; font-size: 10px; min-height: 30px; padding: 4px 8px; }
+.task-inspector-copy > span { color: var(--muted); font-size: 10px; line-height: 1.6; }
+.task-inspector-copy.compact { align-items: center; }
+.task-inspector-copy.compact > span { max-width: 180px; }
+@media (max-width: 480px) {
+  .task-inspector-section { padding: 12px; }
+  .task-inspector-content .table-wrap th, .task-inspector-content .table-wrap td { padding: 9px 4px; }
+  .task-inspector-content .table-wrap table { font-size: 10px; }
+  .task-inspector-ownership { grid-template-columns: 72px minmax(0, 1fr); gap: 8px; }
+  .task-inspector-context { align-items: flex-start; }
+}

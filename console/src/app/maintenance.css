@@ -1,0 +1,475 @@
+.maintenance-recovery,
+.maintenance-panel {
+  min-width: 0;
+}
+
+.maintenance-panel .toolbar {
+  padding: 12px 0;
+  border-bottom: 0;
+}
+
+.maintenance-scope-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel3);
+}
+
+.maintenance-scope-banner > svg,
+.maintenance-readiness-heading > svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.maintenance-scope-banner strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.maintenance-scope-banner p,
+.maintenance-readiness-heading p,
+.maintenance-issue p,
+.maintenance-guidance p,
+.maintenance-restore-preview > p,
+.maintenance-review > p,
+.maintenance-recovery-intro > p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.maintenance-readiness {
+  margin-top: 20px;
+}
+
+.maintenance-readiness-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.maintenance-readiness h3,
+.maintenance-review h3,
+.maintenance-backup-detail h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.maintenance-issues {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.maintenance-issue {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel3);
+}
+
+.maintenance-issue-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.maintenance-issue h4,
+.maintenance-guidance h4,
+.maintenance-project-problems h4,
+.maintenance-restore-preview h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.maintenance-issue-count {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.maintenance-issue-count small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.maintenance-issue .maintenance-next-step {
+  margin-top: 14px;
+  margin-bottom: 10px;
+}
+
+.maintenance-next-step > strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.maintenance-issue > a,
+.maintenance-guidance > a {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 5px;
+  min-height: 32px;
+  margin-top: auto;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.maintenance-issue > a:hover,
+.maintenance-guidance > a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.maintenance-panel a:focus-visible,
+.maintenance-panel summary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+  border-radius: 5px;
+}
+
+.maintenance-project-problems {
+  margin-top: 20px;
+}
+
+.maintenance-project-problems ul,
+.maintenance-scope-projects,
+.maintenance-attempt-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.maintenance-project-problems li,
+.maintenance-scope-projects li,
+.maintenance-attempt-links li {
+  min-width: 0;
+}
+
+.maintenance-project-problems a,
+.maintenance-attempt-links a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+  font-size: 12px;
+}
+
+.maintenance-project-problems a:hover,
+.maintenance-attempt-links a:hover {
+  background: var(--panel2);
+}
+
+.maintenance-project-problems a > span,
+.maintenance-attempt-links a > span:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.maintenance-project-problems svg,
+.maintenance-attempt-links svg {
+  flex-shrink: 0;
+}
+
+.maintenance-panel .maintenance-diagnostics {
+  margin: 16px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.maintenance-panel .maintenance-diagnostics > summary {
+  min-height: 30px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.maintenance-diagnostics[open] > summary {
+  margin-bottom: 10px;
+}
+
+.maintenance-diagnostics > p {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.maintenance-panel .maintenance-diagnostics .json-view {
+  max-width: 100%;
+  max-height: 26rem;
+  margin: 0;
+  padding: 14px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.maintenance-review {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.maintenance-scope-projects {
+  margin-bottom: 18px;
+}
+
+.maintenance-scope-projects li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  background: var(--panel3);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.maintenance-scope-projects li > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.maintenance-scope-projects small {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.maintenance-panel .maintenance-acknowledgement {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.maintenance-panel .maintenance-acknowledgement > input {
+  flex: 0 0 auto;
+  width: 15px;
+  min-width: 15px;
+  height: 15px;
+  margin-top: 3px;
+}
+
+.maintenance-panel .maintenance-policy-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.maintenance-custody {
+  padding: 0 16px 16px;
+}
+
+.maintenance-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.maintenance-facts > div {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--panel3);
+}
+
+.maintenance-facts > div > span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.maintenance-facts strong {
+  font-size: 19px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.maintenance-facts small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.maintenance-guidance,
+.maintenance-restore-preview {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.maintenance-guidance > a,
+.maintenance-guidance > button {
+  margin-top: 8px;
+}
+
+.maintenance-panel .maintenance-detail-lead {
+  margin: 12px 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.maintenance-record {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.maintenance-record > div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 12px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.maintenance-record dt {
+  color: var(--muted);
+}
+
+.maintenance-record dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.maintenance-record code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.maintenance-reason-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 160px;
+  max-width: 330px;
+}
+
+.maintenance-reason-tags > span {
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: var(--panel2);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.maintenance-task-id {
+  display: block;
+  max-width: 290px;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.maintenance-table-caption,
+.maintenance-count-line {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.maintenance-count-line strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.maintenance-job-stage {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.maintenance-restore-preview ol {
+  padding-left: 21px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.maintenance-restore-preview li + li {
+  margin-top: 7px;
+}
+
+@media (max-width: 760px) {
+  .maintenance-issues,
+  .maintenance-project-problems ul,
+  .maintenance-scope-projects,
+  .maintenance-attempt-links,
+  .maintenance-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .maintenance-scope-banner,
+  .maintenance-issue,
+  .maintenance-review,
+  .maintenance-guidance,
+  .maintenance-restore-preview {
+    padding: 13px;
+  }
+
+  .maintenance-record > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .maintenance-panel .maintenance-diagnostics .json-view {
+    padding: 11px;
+    font-size: 11px;
+  }
+}

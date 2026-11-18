@@ -1,0 +1,11 @@
+{
+  "name": "dsh-forgeflow-network",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Project-scoped, durable cross-user Agent communication for ForgeFlow and DSH",
+  "main": "index.mjs",
+  "bin": {"forgeflow-dsh": "bin/forgeflow.mjs"},
+  "engines": {"node": ">=22"},
+  "peerDependencies": {"@deepseek-ai/dsh-tools": "*", "@deepseek-ai/schemastery": "*"},
+  "files": ["index.mjs", "client.mjs", "bin", "templates", "plan.json", "README.md"]
+}

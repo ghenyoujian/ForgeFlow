@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DESIGN_DRAFT_NOT_IMPLEMENTATION",
+  "title": "ForgeFlow immutable principal v1",
+  "required": ["principal_id", "kind", "status", "authorization_epoch", "revision"],
+  "properties": {
+    "principal_id": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["HUMAN", "MANAGED_AGENT", "NATIVE_AGENT", "WORKER", "BOT", "CONNECTOR"]},
+    "account_id": {"type": ["string", "null"]},
+    "workspace_id": {"type": ["string", "null"]},
+    "display_name": {"type": "string", "minLength": 1},
+    "status": {"enum": ["ACTIVE", "REVOKED", "QUARANTINED"]},
+    "authorization_epoch": {"type": "integer", "minimum": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "revoked_at": {"type": ["string", "null"], "format": "date-time"}
+  }
+}

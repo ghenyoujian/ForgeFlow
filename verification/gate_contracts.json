@@ -1,0 +1,198 @@
+{
+  "schema_version": "forgeflow.verification.gates.v1",
+  "note": "Independent minimum proof obligations. Gate PASS requires all obligations and candidate/environment identities; fragments never imply a full gate.",
+  "product": {
+    "G00": [
+      "source and archive SHA",
+      "actual compiler/OS/hardware profile",
+      "database runtime and configuration",
+      "frozen real DSH identity and doctor receipt"
+    ],
+    "G01": [
+      "install from clean directory",
+      "owner login and worker role rejection",
+      "persist project and restart API/Worker/DB",
+      "read identical project/artifact identities after restart"
+    ],
+    "G02": [
+      "two managed repositories and one OBSERVED_READ_ONLY project",
+      "source fingerprints unchanged",
+      "cross-project mutation and token abuse rejected"
+    ],
+    "G03": [
+      "real DSH plans requirements",
+      "source anchors and hashes retained",
+      "draft parsed and persisted",
+      "invalid/unapproved draft cannot admit",
+      "immutable version diff and change impact"
+    ],
+    "G04": [
+      "actual Rust compiler against independent oracle",
+      "cycle path and missing dependencies",
+      "canonical exact write conflicts and owner escape",
+      "stale or missing input rejected",
+      "unfrozen or version-mismatched contract rejected"
+    ],
+    "G05": [
+      "concurrent independent clients compete for same task/resource",
+      "repeated key same request returns same operation and lease",
+      "same key changed payload rejected",
+      "all illegal state pairs rejected",
+      "transaction interrupt rollback and outbox recovery",
+      "gateway budget pre-upstream rejection or direct_observed limitation"
+    ],
+    "G06": [
+      "four-level organization",
+      "sum ancestor resource occupancy including stopping/quarantine",
+      "lower limits drain existing attempts",
+      "continuous competing project loads show declared fairness",
+      "blocked head does not stop eligible work"
+    ],
+    "G07": [
+      "frozen actual DSH and real authorized model request",
+      "raw NDJSON and session/exit/profile/tool/plugin hashes",
+      "real output independent verifier and integrated SHA",
+      "separate real DSH 1,4,10 concurrency artifacts",
+      "unmanaged delegation negative probe and enforcement_mode limitations"
+    ],
+    "G08": [
+      "normal actual process and child exit",
+      "timeout and active cancel reap process group",
+      "late result revoked before response accepted",
+      "unknown stop retains quarantine and capacity",
+      "PID reuse fingerprint protects unrelated process"
+    ],
+    "G09": [
+      "actual temporary git repository",
+      "committed/index/worktree/untracked diff",
+      "rename source and destination",
+      "symlink/traversal/ignored file/branch side effects",
+      "outside precise write scope rejected before integration"
+    ],
+    "G10": [
+      "concurrent real candidates serialized through one lane",
+      "moving main reruns affected verification",
+      "Git CAS race rejects wrong expected SHA",
+      "conflict candidate retained without completion"
+    ],
+    "G11": [
+      "nonzero relevant assertions",
+      "wrong SHA/input/generation/verifier/plan rejected",
+      "missing artifact and all-skipped evidence rejected",
+      "author and independent verifier distinct",
+      "coding main-reachable SHA or structured planning/review artifact"
+    ],
+    "G12": [
+      "at least six real end-to-end business chains",
+      "browser create project/requirement/Flow/review/team/start",
+      "cancel/retry/verify/integrate/evidence readback",
+      "every UI revision and identity checked against API/database",
+      "decision inbox and dynamic replan produce authoritative facts"
+    ],
+    "G13": [
+      "DAG/Gantt/calendar/milestone same stable identities",
+      "timezone and midnight edge cases",
+      "date edits persist expected revision",
+      "schedule edit cannot change attempts or actual runtime facts"
+    ],
+    "G14": [
+      "persistent ordered events from committed outbox",
+      "reconnect with cursor yields exact missing committed set",
+      "duplicate/out-of-order events do not regress revision",
+      "expired cursor explicit snapshot resync",
+      "slow browser bounded stream without heartbeat stall",
+      "future or restored-head cursor explicit resync"
+    ],
+    "G15": [
+      "10000 actual Rust compiled tasks and 100000 persisted events",
+      "128 effective controlled attempts for continuous 3600 seconds",
+      "actual Worker protocol and OS process fingerprints",
+      "mixed completion/retry/cancel/timeout/duplicate/disconnect workload",
+      "129th queued and all ancestor limits checked",
+      "zero duplicate/overlimit/orphan-lease erroneous integration",
+      "state query p95<=500ms and browser event lag p95<=2000ms",
+      "stricter design goals 300ms/1000ms reported separately",
+      "hardware/source/seed/denominators/repro command",
+      "Python vs Rust throughput/latency/resource/recovery and 4 ablations"
+    ],
+    "G16": [
+      "admission precommit crash",
+      "postcommit outbox undelivered",
+      "worker receive acknowledgement lost",
+      "launch before receipt crash",
+      "heartbeat loss and stale generation",
+      "cancel-complete race",
+      "Git advance before DB commit",
+      "disk full incomplete verification",
+      "slow log consumer",
+      "source mutation read snapshot",
+      "recovery no repeated side effect or lost artifact"
+    ],
+    "G17": [
+      "drain and coordinate DB/Git/artifact snapshot",
+      "active write invalidates snapshot",
+      "restore into independent directory",
+      "verify complete inventory hashes and historical readback",
+      "restored attempts cannot inherit old authority"
+    ],
+    "G18": [
+      "actual desktop and mobile screenshots",
+      "monochrome black-white-gray restrained palette",
+      "frosted/matte surfaces and consistent icon language",
+      "keyboard focus and zoom",
+      "reduced motion respected",
+      "no page overflow",
+      "dense tables and long logs responsive",
+      "empty/error/loading states operable"
+    ],
+    "G19": [
+      "fixed candidate/build/dependency/migration/schema/DSH identities",
+      "full source/UI/API/templates/tests/manuals",
+      "performance and fault reproductions",
+      "risk list and all gate evidence conclusions",
+      "no failed or unavailable scope hidden"
+    ],
+    "G20": [
+      "at least 100 simultaneous live REAL DSH sessions",
+      "actual model requests with permission/quota",
+      "hardware memory/CPU/disk and model route",
+      "tokens/costs/unknown cost explicit",
+      "continuous stability and failure denominator",
+      "actual model inflight concurrency distinct from sessions",
+      "no extrapolation from CONTROL_LOAD or real 10 sessions"
+    ]
+  },
+  "phase": {
+    "G0": [
+      "runtime environment",
+      "requirements/owners/contracts frozen",
+      "67-task DAG",
+      "zero shared write conflicts"
+    ],
+    "G1": [
+      "Rust PostgreSQL Worker executor console spine",
+      "100 percent illegal transition rejection",
+      "duplicates races interrupts persistence"
+    ],
+    "G2": [
+      "one real DSH full chain admission to main",
+      "events/SHA traceable",
+      "out-of-scope and stale lease rejection"
+    ],
+    "G3": [
+      "six real business chains",
+      "multi-project Flow checking teams DAG Gantt milestones monitoring",
+      "UI authority consistency"
+    ],
+    "G4": [
+      "G15 sustained 128 60-minute controlled qualification",
+      "real DSH 1 4 10 separately",
+      "user latency/correctness targets"
+    ],
+    "G5": [
+      "fault/crash/isolation/write-scope/consumer/deployment/E2E regression",
+      "all P0 gates real evidence",
+      "failures and unverified scopes explicit"
+    ]
+  }
+}

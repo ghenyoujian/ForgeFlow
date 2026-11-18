@@ -1,0 +1,170 @@
+{
+  "schema_version": "forgeflow.dsh-mode.v3",
+  "id": "forgeflow-collaboration-v3",
+  "name": "ForgeFlow · 通用受管协作",
+  "default_preset_id": "forgeflow-lead-v1",
+  "native_profile": "headless",
+  "roles": [
+    "lead",
+    "owner",
+    "implementer",
+    "verifier"
+  ],
+  "enabled_capabilities": [
+    "workflow",
+    "agent_teams",
+    "one_shot_subagent",
+    "fork_subagent",
+    "planning",
+    "todo",
+    "goal_tracking",
+    "skills",
+    "session_query",
+    "checkpoint",
+    "context_compaction",
+    "plugin_inventory",
+    "specialized_role_presets",
+    "native_team_preset_binding",
+    "managed_exact_leaf_filesystem"
+  ],
+  "configured_limits": {
+    "team_members": 128,
+    "team_tasks": 10000,
+    "subagent_depth": 2,
+    "workflow_concurrent_agents": 32,
+    "workflow_total_agents": 10000
+  },
+  "qualification": "INCONCLUSIVE",
+  "production_admission": "BLOCKED_PENDING_MANAGED_CHILD_ACCOUNTING",
+  "managed_bridge": {
+    "protocol": "forgeflow.dsh-bridge.v2",
+    "entrypoint": "managed-bridge.mjs",
+    "activation": "requires_canonical_worker_socket_and_frozen_attempt_identity",
+    "root_release_authority": "independent_worker_process_quiescence",
+    "allocation_authority": "CANONICAL_POSTGRESQL",
+    "rpc_identity": "UUID_per_logical_request_reused_on_transport_retry"
+  },
+  "managed_model_transport": {
+    "schema_version": "forgeflow.model-uds.v1",
+    "loader": "model-transport.mjs",
+    "activation": "pinned_Node_import_and_frozen_Worker_model_relay_configuration",
+    "sdk_origin": "http://forgeflow-model.invalid",
+    "socket_path": "/tmp/forgeflow/model.sock",
+    "context_authority": "canonical_native_model_grant_scoped_to_provider_iterator_AsyncLocalStorage",
+    "dispatch_authority": "trusted_API_consumes_existing_grant_before_provider_connection",
+    "native_credential": "DUMMY_ONLY",
+    "direct_tool_ip_network": "DISABLED_BY_OUTER_WORKER",
+    "qualification": "SOURCE_IMPLEMENTED_PENDING_ACTUAL_MATCHING_SDK_MODEL_CALL"
+  },
+  "unverified": [
+    "Actual pinned runtime compatibility",
+    "Native child/model accounting and stop recovery",
+    "100+ independent context activations, bounded real active Agents, quota/cost/recovery measurements",
+    "Native browser composition"
+  ],
+  "console_contract": {
+    "identity": [
+      "mode_id",
+      "preset_id",
+      "executor_profile_id",
+      "project_id",
+      "task_id",
+      "attempt_id",
+      "generation",
+      "native_session_id",
+      "parent_session_id",
+      "team_id",
+      "allocation_id",
+      "request_grant_id"
+    ],
+    "views": [
+      "preset and plugin capabilities",
+      "formal Flow and native workflow trace",
+      "team roster and child lineage",
+      "resource allocations",
+      "raw logs and verifier receipts",
+      "cancellation and recovery"
+    ]
+  },
+  "canonical_native_qualification": {
+    "outcome": "INCONCLUSIVE",
+    "authority": "CANONICAL_POSTGRESQL",
+    "evidence_directory": "../../qualification/canonical-collaboration",
+    "scope": "Awaiting actual pinned v2 API/Worker finite native workload and independent oracle"
+  },
+  "native_process_sandbox": {
+    "schema_version": "forgeflow.native-combined-sandbox.v1",
+    "provider": "managed-sandbox.mjs",
+    "official_landlock_fact": "PRESERVE_ACTUAL_FULL_OR_PARTIAL_VERDICT",
+    "required_landlock_abi": 3,
+    "supplement": "native-ioctl-deny.c: inherited seccomp denies ioctl except ABI5-exempt FIONBIO; architecture/compat ABI checked",
+    "scope": "Native filesystem ABI5 mask with device ioctl supplementation; other production obligations remain unverified",
+    "outer_worker_boundary": "BWRAP_LANDLOCK_EXACT with --disable-userns remains mandatory",
+    "preparation": "Immutable source/compiler/binary/doctor pins; ordinary overlay omits qualification tools",
+    "qualification": "PENDING_ACTUAL_ZERO_MODEL_OUTER_PTC_PROBE"
+  },
+  "role_catalog": {
+    "path": "agent-roles.json",
+    "generic_presets": 4,
+    "specialized_presets": 0,
+    "planned_positions": 0,
+    "binding_plugin": "team-binding.mjs",
+    "qualification": "SOURCE_IMPLEMENTED_PENDING_ACTUAL_NATIVE_ROLE_BINDING"
+  },
+  "runtime_capacity_policy": {
+    "workflow_concurrent_agents": 32,
+    "workflow_total_agent_calls_per_run": 10000,
+    "team_member_names_per_native_team": 128,
+    "team_task_records_per_native_team": 10000,
+    "subagent_depth": 2,
+    "limit_authority": "Editable finite plugin deployment guards plus canonical runtime admission, not product limits or measured capacity",
+    "native_organization_mapping": "Project-defined responsibility teams are distinct from actual native session lineage",
+    "role_binding": "Actual registry.select before first turn for fresh native teammates, exact persisted preset restore on cold resume",
+    "fork_role_change": "Unsupported by installed blank-session selection contract; use fresh for different positions",
+    "unbound_workflow_children": "Inherited parent preset, actual child prompt supplies finite assignment; explicit preset option is not supported by installed Workflow schema",
+    "active_agent_tiers": [
+      1,
+      4,
+      10,
+      32,
+      64
+    ],
+    "dormant_contexts": "Persistent input/history descriptors; no resident process or active-slot reservation"
+  },
+  "ui_capabilities": {
+    "headless_browser_surface": "NOT_MOUNTED_BY_OFFICIAL_HEADLESS_BUNDLE",
+    "source_plugins": {
+      "presets": "@deepseek-ai/dsh-client-ui-agent-preset",
+      "workflow": "@deepseek-ai/dsh-client-ui-workflow-run",
+      "skills": "@deepseek-ai/dsh-client-ui-skill",
+      "plugins": "@deepseek-ai/dsh-client-ui-plugin-manager",
+      "teams": "@deepseek-ai/dsh-experimental-client-ui-agent-team"
+    },
+    "source_available": true,
+    "native_browser_mount": "Separate native Web/Desktop composition; not inferred from headless doctor",
+    "forgeflow_console": "Canonical team, role, attempt and delivery UI must query actual runtime facts",
+    "qualification": "INCONCLUSIVE"
+  },
+  "managed_filesystem": {
+    "provider_id": "forgeflow-exact-leaf-filesystem",
+    "provider_module": "exact-leaf-filesystem.mjs",
+    "scope": "FRESH_MANAGED_AUTHOR_PROFILE_ONLY",
+    "replaces_plugin_id": "fs-sandbox",
+    "native_service": "fs",
+    "native_sdk_entry": "packages/fs/fs-sandbox/lib/index.js",
+    "required_services": [
+      "sandboxPolicy",
+      "forgeflowExactWriteBinding"
+    ],
+    "binding_schema_version": "forgeflow.exact-leaf-write.v1",
+    "binding_authority": "CANONICAL_WORKER_ACTUAL_ISOLATED_WORKTREE_AND_SEALED_ORIGINAL_WRITE_SET",
+    "mutation_admission": "LIVE_CANONICAL_ACTOR_GRANT_AND_BRIDGE_NOT_CLOSING",
+    "max_write_bytes": 16777216,
+    "existing_regular_single_link_exact_leaf_only": true,
+    "parent_directory_widening": false,
+    "publication": "IN_PLACE_FSYNC_WITH_NATIVE_VERSION_GUARDS",
+    "crash_atomicity": false,
+    "inspector": "KEEP_STOCK_READ_ONLY_WITHOUT_EXACT_WRITE_BINDING",
+    "qualification": "INCONCLUSIVE"
+  }
+}

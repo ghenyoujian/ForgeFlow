@@ -1,0 +1,23 @@
+[package]
+name = "forgeflow-gateway"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+axum.workspace = true
+chrono.workspace = true
+futures.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+tokio.workspace = true
+uuid.workspace = true
+sqlx.workspace = true
+forgeflow-domain = { path = "../domain" }
+hmac = "0.12"
+
+[dev-dependencies]
+tower.workspace = true

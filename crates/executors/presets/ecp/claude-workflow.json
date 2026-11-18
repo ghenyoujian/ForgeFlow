@@ -1,0 +1,8 @@
+{
+  "schema_version": "forgeflow.ecp.native-adapter.v1",
+  "adapter_id": "claude-workflow",
+  "provider": "CLAUDE",
+  "support_status": "UNSUPPORTED",
+  "evidence_status": "NOT_RUN",
+  "native_modes": ["workflow"]
+}

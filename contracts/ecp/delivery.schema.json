@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DESIGN_DRAFT_NOT_IMPLEMENTATION",
+  "title": "ForgeFlow ECP delivery and receipt v1",
+  "required": ["delivery_id", "message_id", "recipient_principal_id", "state", "attempt_count", "created_at"],
+  "properties": {
+    "delivery_id": {"type": "string", "minLength": 1},
+    "message_id": {"type": "string", "minLength": 1},
+    "recipient_principal_id": {"type": "string", "minLength": 1},
+    "state": {"enum": ["PENDING", "IN_FLIGHT", "RETRY_WAIT", "ACKED", "EXPIRED", "REVOKED", "DEAD_LETTER", "UNCONFIRMED"]},
+    "attempt_count": {"type": "integer", "minimum": 0},
+    "generation": {"type": ["integer", "string"], "minimum": 1},
+    "next_attempt_at": {"type": ["string", "null"], "format": "date-time"},
+    "expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "acked_at": {"type": ["string", "null"], "format": "date-time"},
+    "last_error_code": {"type": ["string", "null"]},
+    "receipt": {"type": ["object", "null"], "additionalProperties": false, "required": ["kind", "principal_id", "created_at"], "properties": {"kind": {"enum": ["RECEIVED", "READ", "PROCESSING", "PROCESSED", "REJECTED"]}, "principal_id": {"type": "string"}, "created_at": {"type": "string", "format": "date-time"}, "data": {"type": "object"}}}
+  },
+  "x-source-root": "control",
+  "x-semantics": {"ACKED": "durable receipt only; never task completion", "UNCONFIRMED": "external side effect delivery cannot be determined", "cursor": "advance only through a durable contiguous prefix"}
+}

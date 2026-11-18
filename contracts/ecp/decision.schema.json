@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DESIGN_DRAFT_NOT_IMPLEMENTATION",
+  "title": "ForgeFlow ECP decision v1",
+  "required": ["decision_id", "proposal_id", "workspace_id", "issuer_principal_id", "outcome", "expected_revision", "revision", "reason", "evidence"],
+  "properties": {
+    "decision_id": {"type": "string", "minLength": 1},
+    "proposal_id": {"type": "string", "minLength": 1},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "issuer_principal_id": {"type": "string", "minLength": 1},
+    "outcome": {"enum": ["APPROVE", "REJECT", "REQUEST_CHANGES"]},
+    "expected_revision": {"type": "integer", "minimum": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "reason": {"type": "string", "minLength": 1, "maxLength": 8192},
+    "evidence": {"type": "object"},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

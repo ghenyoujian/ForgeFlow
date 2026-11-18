@@ -1,0 +1,1 @@
+CREATE TABLE native_sessions(upstream_session_id TEXT PRIMARY KEY,project_id TEXT NOT NULL,attempt_id TEXT NOT NULL UNIQUE,generation BIGINT NOT NULL,worker_id TEXT NOT NULL REFERENCES workers(worker_id),bound_at TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),FOREIGN KEY(project_id,attempt_id) REFERENCES attempts(project_id,attempt_id));

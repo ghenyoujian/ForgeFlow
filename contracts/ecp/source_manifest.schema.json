@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgeflow.invalid/contracts/ecp/source_manifest.schema.json",
+  "title": "ForgeFlow ECP source snapshot manifest v1",
+  "description": "Deterministic source identity manifest. Symlink records bind the link target text and mode; regular files bind mode and content hash.",
+  "x-status": "IMPLEMENTED_CONTRACT_P0_01",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_root",
+    "head",
+    "worktree_state",
+    "exclude_patterns",
+    "untracked_scan_mode",
+    "untracked_scan_roots",
+    "tracked_changes",
+    "untracked_business_files",
+    "excluded_generated_files",
+    "patch_sha256",
+    "manifest_sha256",
+    "created_at",
+    "release_qualifiable"
+  ],
+  "properties": {
+    "schema_version": {"const": "forgeflow.ecp-source-manifest.v1"},
+    "source_root": {"type": "string", "minLength": 1},
+    "head": {"type": "string", "pattern": "^[a-f0-9]{40,64}$"},
+    "worktree_state": {"enum": ["CLEAN", "DIRTY_UNFROZEN"]},
+    "exclude_patterns": {"type": "array", "items": {"type": "string"}},
+    "untracked_scan_mode": {"enum": ["bounded", "all"]},
+    "untracked_scan_roots": {"type": "array", "items": {"type": "string"}},
+    "tracked_changes": {"type": "array", "items": {"$ref": "#/$defs/source_entry"}},
+    "untracked_business_files": {"type": "array", "items": {"$ref": "#/$defs/source_entry"}},
+    "excluded_generated_files": {"type": "array", "items": {"$ref": "#/$defs/excluded_entry"}},
+    "patch_sha256": {"$ref": "#/$defs/sha256"},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "release_qualifiable": {"type": "boolean"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "mode": {"type": "string", "pattern": "^[0-7]{4}$"},
+    "source_entry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "status", "kind", "mode", "sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "status": {"type": "string", "minLength": 2, "maxLength": 2},
+            "kind": {"const": "deleted"},
+            "mode": {"type": "null"},
+            "sha256": {"type": "null"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "status", "kind", "mode", "sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "status": {"type": "string", "minLength": 2, "maxLength": 2},
+            "kind": {"const": "file"},
+            "mode": {"$ref": "#/$defs/mode"},
+            "sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "status", "kind", "mode", "target", "sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "status": {"type": "string", "minLength": 2, "maxLength": 2},
+            "kind": {"const": "symlink"},
+            "mode": {"$ref": "#/$defs/mode"},
+            "target": {"type": "string", "minLength": 1},
+            "sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "status", "kind", "mode", "sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "status": {"type": "string", "minLength": 2, "maxLength": 2},
+            "kind": {"const": "directory_summary"},
+            "mode": {"$ref": "#/$defs/mode"},
+            "sha256": {"type": "null"}
+          }
+        }
+      ]
+    },
+    "excluded_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "status", "reason"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "status": {"type": "string", "minLength": 2, "maxLength": 2},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

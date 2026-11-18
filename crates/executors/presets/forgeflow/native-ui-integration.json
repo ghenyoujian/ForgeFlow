@@ -1,0 +1,8 @@
+{
+  "schema_version": "forgeflow.native-ui-integration.v1",
+  "scope": "Project-independent interface declaration; runtime paths require explicit pinned deployment discovery",
+  "qualification": "NOT_RUN",
+  "entrypoints": {},
+  "preparation": "ops/project-pack.py generates explicit project composition; no personal DSH home or legacy source path is assumed",
+  "authority": "CANONICAL_POSTGRESQL"
+}

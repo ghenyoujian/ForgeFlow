@@ -1,0 +1,14 @@
+:root {
+  --ecp-space-1: 4px;
+  --ecp-space-2: 8px;
+  --ecp-space-3: 12px;
+  --ecp-space-4: 16px;
+  --ecp-space-5: 24px;
+  --ecp-radius-panel: 14px;
+  --ecp-focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+[data-ecp-shell="true"] :focus-visible {
+  outline: 0;
+  box-shadow: var(--ecp-focus-ring);
+}

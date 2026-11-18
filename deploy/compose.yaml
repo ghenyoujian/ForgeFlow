@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16.15-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: forgeflow
+      POSTGRES_USER: forgeflow
+      POSTGRES_PASSWORD: ${FORGEFLOW_DATABASE_PASSWORD:?set database password}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U forgeflow -d forgeflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  server:
+    user: "${FORGEFLOW_UID:-1000}:${FORGEFLOW_GID:-1000}"
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://forgeflow:${FORGEFLOW_DATABASE_PASSWORD}@postgres:5432/forgeflow
+      FORGEFLOW_BIND: 0.0.0.0:8787
+      FORGEFLOW_ALLOW_REMOTE: '1'
+      FORGEFLOW_DATA_ROOT: /var/lib/forgeflow
+      FORGEFLOW_CONSOLE_DIR: /opt/forgeflow/console
+      FORGEFLOW_OWNER_PASSWORD: ${FORGEFLOW_OWNER_PASSWORD:?set initial password}
+      FORGEFLOW_OWNER_TOKEN: ${FORGEFLOW_OWNER_TOKEN:?set owner service token}
+      FORGEFLOW_WORKER_TOKEN: ${FORGEFLOW_WORKER_TOKEN:?set worker service token}
+    ports:
+      - 127.0.0.1:${FORGEFLOW_HTTP_PORT:-8787}:8787
+    volumes:
+      - ${FORGEFLOW_DATA_ROOT:?set absolute persistent data directory}:/var/lib/forgeflow
+      - ${FORGEFLOW_PROJECT_ROOT:?set explicit project directory}:${FORGEFLOW_PROJECT_ROOT}:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  postgres:

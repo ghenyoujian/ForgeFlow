@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:forgeflow:ecp:native-adapter:v1",
+  "title": "ForgeFlow ECP native adapter contract",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DRAFT_NOT_ADMITTED",
+  "required": [
+    "schema_version",
+    "adapter_id",
+    "provider",
+    "profile",
+    "identity",
+    "capabilities",
+    "methods",
+    "event_contract",
+    "evidence_policy"
+  ],
+  "properties": {
+    "schema_version": {"const": "forgeflow.ecp.native-adapter.v1"},
+    "adapter_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "provider": {"enum": ["DSH", "CLAUDE", "UNKNOWN"]},
+    "profile": {"$ref": "#/$defs/ProfilePin"},
+    "identity": {"$ref": "#/$defs/Identity"},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/Capability"},
+      "allOf": [{"contains": {"properties": {"name": {"const": "managed_leaf"}}}}]
+    },
+    "methods": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prepare", "start", "observe", "send", "cancel", "inspect", "resume", "collect_artifacts", "dispose"],
+      "properties": {
+        "prepare": {"$ref": "#/$defs/Method"},
+        "start": {"$ref": "#/$defs/Method"},
+        "observe": {"$ref": "#/$defs/Method"},
+        "send": {"$ref": "#/$defs/Method"},
+        "cancel": {"$ref": "#/$defs/Method"},
+        "inspect": {"$ref": "#/$defs/Method"},
+        "resume": {"$ref": "#/$defs/Method"},
+        "collect_artifacts": {"$ref": "#/$defs/Method"},
+        "dispose": {"$ref": "#/$defs/Method"}
+      }
+    },
+    "event_contract": {"$ref": "#/$defs/EventContract"},
+    "evidence_policy": {"$ref": "#/$defs/EvidencePolicy"}
+  },
+  "$defs": {
+    "Digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "ProfilePin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "profile_version", "binary_sha256", "adapter_sha256", "configuration_sha256"],
+      "properties": {
+        "profile_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "profile_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "binary_sha256": {"$ref": "#/$defs/Digest"},
+        "adapter_sha256": {"$ref": "#/$defs/Digest"},
+        "configuration_sha256": {"$ref": "#/$defs/Digest"}
+      }
+    },
+    "Identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principal_kind", "session_identity", "attempt_identity", "generation"],
+      "properties": {
+        "principal_kind": {"enum": ["MANAGED_AGENT", "NATIVE_AGENT", "WORKER", "BOT", "UNKNOWN"]},
+        "session_identity": {"type": "string", "minLength": 1, "maxLength": 512},
+        "attempt_identity": {"type": "string", "minLength": 1, "maxLength": 512},
+        "generation": {"type": "integer", "minimum": 1}
+      }
+    },
+    "Capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "support", "evidence", "control", "reason"],
+      "properties": {
+        "name": {"enum": ["managed_leaf", "subagent", "native_team", "workflow", "bot", "session_resume", "cancel", "structured_events", "child_supervision", "write_isolation", "cost_enforcement"]},
+        "support": {"enum": ["SUPPORTED", "PARTIAL", "UNSUPPORTED", "UNKNOWN"]},
+        "evidence": {"enum": ["VERIFIED", "FAILED", "INCONCLUSIVE", "NOT_RUN", "BLOCKED"]},
+        "control": {"enum": ["PLATFORM", "NATIVE", "OBSERVE_ONLY", "UNAVAILABLE"]},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 512},
+        "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "maxItems": 64}
+      },
+      "allOf": [
+        {"if": {"properties": {"support": {"const": "SUPPORTED"}}}, "then": {"required": ["evidence_refs"], "properties": {"evidence_refs": {"minItems": 1}}}},
+        {"if": {"properties": {"evidence": {"const": "VERIFIED"}}}, "then": {"properties": {"support": {"enum": ["SUPPORTED", "PARTIAL"]}}}}
+      ]
+    },
+    "Method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["implemented", "side_effect", "idempotency", "failure"],
+      "properties": {
+        "implemented": {"type": "boolean"},
+        "side_effect": {"enum": ["NONE", "START", "MESSAGE", "CANCEL", "RESUME", "ARTIFACT", "DISPOSE"]},
+        "idempotency": {"enum": ["REQUIRED", "NATIVE_KEY", "NONE", "UNSUPPORTED"]},
+        "failure": {"enum": ["STRUCTURED", "PERSISTED_UNKNOWN", "PROCESS_EXIT", "UNSUPPORTED"]}
+      }
+    },
+    "EventContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "raw_event_required", "sequence_source", "unknown_event_policy"],
+      "properties": {
+        "schema_version": {"const": "forgeflow.ecp.native-event.v1"},
+        "raw_event_required": {"const": true},
+        "sequence_source": {"enum": ["NATIVE", "PLATFORM", "UNKNOWN"]},
+        "unknown_event_policy": {"enum": ["PERSIST_AND_QUARANTINE", "REJECT", "DROP_UNSUPPORTED"]}
+      }
+    },
+    "EvidencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["real_model_required_for", "fixture_can_prove", "historical_evidence_is_qualification"],
+      "properties": {
+        "real_model_required_for": {"type": "array", "items": {"type": "string"}},
+        "fixture_can_prove": {"type": "array", "items": {"type": "string"}},
+        "historical_evidence_is_qualification": {"const": false}
+      }
+    }
+  }
+}

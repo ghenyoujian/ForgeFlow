@@ -1,0 +1,8 @@
+{
+  "schema_version": "forgeflow.ecp.native-adapter.v1",
+  "adapter_id": "claude-native-team",
+  "provider": "CLAUDE",
+  "support_status": "UNSUPPORTED",
+  "evidence_status": "NOT_RUN",
+  "native_modes": ["native_team"]
+}

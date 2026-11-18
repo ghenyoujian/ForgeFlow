@@ -1,0 +1,11 @@
+# Control baseline
+
+The full source specification is `../docs/idea/ForgeFlow_Control_Design_Plan.md` relative to the control repository root. The user permits rebuilding instead of maintaining the demo. Legacy sources are retained in the parent archive; legacy completion records are never imported as new qualification.
+
+This repository implements a Rust modular control plane, PostgreSQL authority, a separate supervised Rust worker and a React/TypeScript console. DSH remains the external native runtime. The canonical schema is `forgeflow.execution.v1` from design section 13.3; `generation`, `operation_id`, `base_sha` are canonical names. Attempts follow section 11.2 verbatim. Process exit is execution evidence only.
+
+A01 exclusively owns domain types, store transactions, migrations and schemas. A02 owns planning and scheduling; A03 process lifecycle and worker; A04 executor and gateway; A05 Git and evidence; A06 frontend foundation; A07 planning interactions; A08 monitoring interactions; A09 API, deployment and CLI; A10 independent verification. A00 owns root manifests, lock, decisions and integration. No agent creates additional agents or writes outside its ownership without explicit transfer. All agents use the shared checkout, never reset or commit another owner's files. A00 alone performs Git integration. Live assignments enumerate exact proposed paths before implementation and carry source hashes, dependencies, resource budgets, validation and rollback.
+
+Frontend uses `/api/v1`, bearer service authentication, Idempotency-Key on commands, expected revision for changes, persistent event cursors. Canonical public DTO and method shapes must be published by A01/A09 before consumers bind. While contracts are pending, independent algorithms and fixtures can proceed. No fake success or fallback mock backend.
+
+All compilation uses `CARGO_TARGET_DIR=/home/chenyoujian/.cache/forgeflow-control-target`, `CARGO_BUILD_JOBS=2`. A00 runs workspace integration builds; agents request build coordination to avoid competing heavy builds. 128 controlled channels and 100+ real DSH sessions have distinct qualifications. Every gate starts INCONCLUSIVE until actual scope-matched evidence proves it.

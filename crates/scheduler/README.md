@@ -1,0 +1,21 @@
+# Fair scheduling and admission pump
+
+`ready_frontier(SchedulerInput)` is a read-only proposal. It chooses across projects with weighted round robin, rotates root Owners within each project, and ranks a team's cards by priority plus waiting age, enqueue position and stable ID. A bounded candidate window skips blocked queue heads; the persisted per-queue scan cursor allows later cards to be reached over successive pumps instead of rescanning an infinite blocked prefix.
+
+Every candidate is constrained by global, project, all ancestor-team, current-team and target-worker policies. A target worker policy must name that worker. The complete seven-dimensional vector is checked at once: active/coding slots, CPU, memory, build/GPU permits and provider in-flight requests. Allocated totals include reserved, held and quarantined resources until confirmed release. Lowering a limit below current allocation creates draining blockers without revoking already-running attempts or manufacturing free capacity.
+
+Other blockers include missing committed Flow, open attempts, stale immutable inputs, unqualified executor, retry/provider delay, missing typed dependency receipts, paused ancestor and intersecting active/stopping/quarantined writes. Each reason identifies the task, scope and exhausted dimension when relevant. The pure projection never changes the resource ledger.
+
+`pump_once(&Store)` and `pump_once_with_config` implement real orchestration. A PostgreSQL transaction advisory lock (`46001338`) allows one active bounded pump. It reads persistent `queue_entries`, committed Flows and compile contexts, live registered DSH-headless workers, explicit policies and allocated resource totals; then applies `ready_frontier` and calls the sole authority `Store::admit` for each proposal. Store rechecks all conditions inside its own atomic transaction and writes the Attempt/Lease/resource reservations/start Outbox. The leadership transaction performs no model, process or Git execution. It is released when the pump completes or fails.
+
+A `QueueEntry` document is keyed by the globally unique task ID. It contains project/task/revision, priority/queue timestamps, worker and worker scope, additional scope leaves, lease duration, approved execution envelope, status (`QUEUED`) and optional retry time. Its envelope must equal the frozen `TaskCard.envelope`; the queue cannot expand authority. Empty worker ID selects a live registered DSH-headless worker and an empty worker scope defaults to `worker:<worker_id>`. Configure that explicit worker policy before enqueueing. Successful admission saves `DISPATCHED` plus admission operation and attempt references. Success is still determined by the execution/evidence/integration lifecycle.
+
+The admission idempotency key binds project, task revision and queue revision. A process crash between admission and queue status persistence cannot issue a second lease: an open attempt remains counted and reusing a stable admission key returns its original receipt. A finite retry requires a deliberate new queue revision; no succeeded task is automatically replayed to fill capacity. The pump stores fairness cursor, scan metrics and blockers in `operations/scheduler-state` on the first active managed project. Each release event should wake the server pump, with a short interval as fallback. No work is invented when queues are empty.
+
+Run checks from the repository root using the shared build permit:
+
+```sh
+CARGO_TARGET_DIR=/home/chenyoujian/.cache/forgeflow-control-target CARGO_BUILD_JOBS=2 cargo test -p forgeflow-scheduler
+```
+
+Pure tests independently recompute ancestor usage and vector budgets and cover four team levels, sibling aggregate limits, weighted project/Owner fairness, aging, blocked heads, scan resumption, draining, integer overflow, write quarantine, and 128 accepted plus one rejected projected card. These do not qualify 128 actual channels for 60 minutes, prove automatic admission/worker start, establish model gateway enforcement or qualify real DSH capacity. Those require live Store/worker/API evidence and the full specified workload. The current service uses stable globally unique task IDs; colliding task IDs across projects are rejected explicitly instead of silently merging queues.

@@ -1,0 +1,30 @@
+# Only compilation inputs enter the Docker context. Runtime/evidence/cache trees
+# can be tens of GiB and must never be sent to the builder.
+**
+!Cargo.toml
+!Cargo.lock
+!LICENSE
+!.cargo/
+!.cargo/config.toml
+!crates/
+!crates/**
+!migrations/
+!migrations/**
+!ops/
+!ops/backup.py
+!ops/restore.py
+!console/
+!console/package.json
+!console/package-lock.json
+!console/index.html
+!console/tsconfig.json
+!console/vite.config.ts
+!console/src/
+!console/src/**
+**/node_modules
+**/target
+**/qualification/
+**/qualification/**
+**/.git
+**/__pycache__
+**/*.pyc

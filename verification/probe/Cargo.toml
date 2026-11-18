@@ -1,0 +1,12 @@
+[package]
+name = "forgeflow-independent-probe"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+
+[dependencies]
+forgeflow-domain = { path = "../../crates/domain" }
+forgeflow-planner = { path = "../../crates/planner" }
+forgeflow-scheduler = { path = "../../crates/scheduler" }
+serde_json = "1"

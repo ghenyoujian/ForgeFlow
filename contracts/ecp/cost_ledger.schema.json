@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DESIGN_DRAFT_NOT_IMPLEMENTATION",
+  "title": "ForgeFlow ECP cost ledger entry v1",
+  "required": ["ledger_id", "workspace_id", "settlement_status", "currency", "usage"],
+  "properties": {
+    "ledger_id": {"type": "string", "minLength": 1},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "project_id": {"type": ["string", "null"]},
+    "attempt_id": {"type": ["string", "null"]},
+    "reservation_id": {"type": ["string", "null"]},
+    "provider_request_id": {"type": ["string", "null"]},
+    "currency": {"type": "string", "minLength": 1},
+    "estimated_cost": {"type": ["number", "null"], "minimum": 0},
+    "settled_cost": {"type": ["number", "null"], "minimum": 0},
+    "usage": {"type": "object"},
+    "settlement_status": {"enum": ["ADMITTED", "SETTLED", "PARTIAL", "UNKNOWN", "QUARANTINED", "REJECTED"]},
+    "source_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "settled_at": {"type": ["string", "null"], "format": "date-time"}
+  },
+  "x-semantics": {
+    "unknown_usage": "Never converted to zero usage or released budget automatically.",
+    "logical_vs_physical": "Logical budget reservations cannot claim OS/cgroup enforcement.",
+    "idempotency": "workspace plus provider_request_id is unique when a provider request exists."
+  }
+}

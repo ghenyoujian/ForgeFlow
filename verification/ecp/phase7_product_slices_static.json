@@ -1,0 +1,84 @@
+{
+  "schema_version": "forgeflow.ecp.product-slices-static.v1",
+  "product_gate_effect": "NONE",
+  "qualification": "NOT_RUN",
+  "status": "OBSERVED_NOT_GATE",
+  "source_sha": "00f024640b9a4ad3f85b9a6d339291a9f4611963",
+  "checks": [
+    {
+      "task_id": "P5-11",
+      "path": "console/src/features/agents/EcpBotRoom.tsx",
+      "status": "PASS",
+      "sha256": "fdd814c8b96f628646c993282115598238093f9a0962590dd0631ddeb65f4195"
+    },
+    {
+      "task_id": "P5-11",
+      "path": "docs/ecp/native-user-journeys.md",
+      "status": "PASS",
+      "sha256": "334d8b07e67b9bbdac386c0049e036cf2bd1b782326eb7e9217a3def8cefde77"
+    },
+    {
+      "task_id": "P7-04",
+      "path": "console/src/features/flow/EcpDag.tsx",
+      "status": "PASS",
+      "sha256": "7710254dc57463c8df679d9db05b5a305059853435c6639d10de6be61ff6cdeb"
+    },
+    {
+      "task_id": "P7-04",
+      "path": "console/src/features/flow/EcpInspector.tsx",
+      "status": "PASS",
+      "sha256": "93d279d05009360fd57dd2d8811b536347fb77daee4ea4aeadeb4480ea2c519f"
+    },
+    {
+      "task_id": "P7-04",
+      "path": "console/src/features/flow/ecpLayoutWorker.ts",
+      "status": "PASS",
+      "sha256": "982adbce3b2b3702e79b1378e26a8dc1a64d0ce1fd9496b8c02deb4acaea045f"
+    },
+    {
+      "task_id": "P7-05",
+      "path": "console/src/features/timeline/EcpGantt.tsx",
+      "status": "PASS",
+      "sha256": "7f69063591997bbbf22e4e14692630cd4ce1d032aff9de47958692ebbe17e14a"
+    },
+    {
+      "task_id": "P7-05",
+      "path": "console/src/features/timeline/EcpCalendar.tsx",
+      "status": "PASS",
+      "sha256": "3fd6fb80ad8a0393f50c40ae5e065f50e2069bc84247c3575463783c915d65bc"
+    },
+    {
+      "task_id": "P7-06",
+      "path": "console/src/features/collaboration/EcpHub.tsx",
+      "status": "PASS",
+      "sha256": "502edf6ec4b3a7f0641f747530162ac4b4d25a64bc74bd9a6b09c283df5bc449"
+    },
+    {
+      "task_id": "P7-06",
+      "path": "console/src/features/agents/EcpAgentTheater.tsx",
+      "status": "PASS",
+      "sha256": "186ab65fee6dbcb56722379ed24f418f482a52aceb1b0b7e9be4ed9066f47655"
+    },
+    {
+      "task_id": "P7-07",
+      "path": "console/src/features/evidence/EcpEvidence.tsx",
+      "status": "PASS",
+      "sha256": "f8d111f9999d3969cf660306c2e7a8592a3c6e95db31068adae2a5b14287faea"
+    },
+    {
+      "task_id": "P7-07",
+      "path": "console/src/features/releases/EcpRelease.tsx",
+      "status": "PASS",
+      "sha256": "cccc8041687d3480a4ce2930b2979998e1436694be47985a6f9b11dcd60d0f54"
+    },
+    {
+      "task_id": "P7-07",
+      "path": "console/src/features/settings/EcpMaintenance.tsx",
+      "status": "PASS",
+      "sha256": "9b8942ee22e5ec674599c002bb1703fa2b3055793fb55f395017e0b38b9b4012"
+    }
+  ],
+  "browser_e2e": "NOT_RUN",
+  "independent_oracle": "NOT_RUN",
+  "native_provider_receipts": "NOT_RUN"
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DESIGN_DRAFT_NOT_IMPLEMENTATION",
+  "x-security-note": "Schema validation is not authorization, ordering, delivery, idempotency, or durability proof.",
+  "title": "ForgeFlow ECP message envelope v1",
+  "required": ["schema_version", "message_id", "workspace_id", "conversation_id", "thread_id", "sender_principal_id", "message_kind", "sequence", "client_request_id", "payload", "payload_sha256", "created_at", "expires_at", "provenance"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "message_id": {"type": "string", "minLength": 1, "readOnly": true},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "project_id": {"type": ["string", "null"]},
+    "conversation_id": {"type": "string", "minLength": 1},
+    "thread_id": {"type": "string", "minLength": 1},
+    "sender_principal_id": {"type": "string", "minLength": 1, "readOnly": true},
+    "message_kind": {"type": "string", "minLength": 1, "maxLength": 128},
+    "sequence": {"type": "string", "pattern": "^[1-9][0-9]*$", "maxLength": 20, "readOnly": true},
+    "correlation_id": {"type": ["string", "null"], "maxLength": 128},
+    "causation_id": {"type": ["string", "null"], "maxLength": 128},
+    "client_request_id": {"type": "string", "minLength": 16, "maxLength": 128},
+    "payload": {"type": "object", "maxProperties": 256},
+    "payload_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "created_at": {"type": "string", "format": "date-time", "readOnly": true},
+    "expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "provenance": {"type": "object", "required": ["source"], "additionalProperties": false, "properties": {"source": {"enum": ["human", "connector", "native_runtime", "system"]}, "connector_id": {"type": ["string", "null"]}, "external_event_id": {"type": ["string", "null"], "maxLength": 256}, "executor_profile_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}}}
+  },
+  "x-source-root": "control",
+  "x-compatibility": {"legacy": "0014 agent_messages", "sequence_scope": "conversation", "delivery": "at_least_once", "transition": "No ECP support claim until producer, consumer, outbox and independent oracle evidence share one source identity."}
+}

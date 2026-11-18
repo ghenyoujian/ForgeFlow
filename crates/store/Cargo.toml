@@ -1,0 +1,19 @@
+[package]
+name = "forgeflow-store"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+[dependencies]
+forgeflow-domain = { path = "../domain" }
+chrono.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
+forgeflow-planner = { path = "../planner" }
+forgeflow-evidence = { path = "../evidence" }
+forgeflow-git = { path = "../git" }
+async-trait.workspace = true
+sha2.workspace = true
+tokio.workspace = true

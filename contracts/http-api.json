@@ -1,0 +1,91 @@
+{
+  "schema_version": "forgeflow.accounts-network.http.v1",
+  "account": {
+    "registration": {
+      "method": "POST",
+      "path": "/api/v1/registrations",
+      "body": {
+        "email": "string",
+        "display_name": "string",
+        "password": "12..4096 bytes"
+      },
+      "result": "opaque 8h personal session + independent workspace"
+    },
+    "login": {
+      "method": "POST",
+      "path": "/api/v1/session",
+      "body": {
+        "email": "optional; absent means legacy deployment owner",
+        "password": "string"
+      }
+    },
+    "me": "GET /api/v1/me",
+    "workspace_header": "X-ForgeFlow-Workspace",
+    "cookie_mutations": "X-CSRF-Token",
+    "password_epoch": "updated password revokes previous sessions and connector tokens"
+  },
+  "workspace": {
+    "list_create": "GET/POST /api/v1/workspaces",
+    "members": "GET /api/v1/workspaces/{workspace}/members",
+    "roles": [
+      "OWNER",
+      "EDITOR",
+      "VIEWER"
+    ],
+    "member_change": "PATCH /api/v1/workspaces/{workspace}/members/{member} {role: OWNER|EDITOR|VIEWER|null}",
+    "invitations": "GET/POST /api/v1/workspaces/{workspace}/invitations {role:EDITOR|VIEWER,email?:string}",
+    "accept": "POST /api/v1/invitations/accept {token:string}",
+    "revoke": "POST /api/v1/workspaces/{workspace}/invitations/{invitation}/revoke",
+    "member_change_validation": "role is required; explicit JSON null means removal; unknown fields and invalid roles are rejected with 422 without changing membership",
+    "invitation_validation": "unknown fields are rejected with 422; missing or null email remains an intentional link invitation",
+    "concurrent_writes": "account catalog writes and tutorial imports recheck current member role and project binding within their write transaction, before idempotency replay; a workspace share lock orders commits against member removal/downgrade"
+  },
+  "agent_network": {
+    "base": "/api/v1/projects/{project}/agent-network",
+    "protocol": "forgeflow.agent-network.v1",
+    "credential": "personal project connector, 8 hours, communications only",
+    "integrations": "GET/POST /integrations; POST /integrations/{integration}/revoke",
+    "agents": "GET/POST /agents; registration requires connector and native_agent_id,name",
+    "messages": "GET /messages?after=sequence&agent_id=id; GET /messages?latest=true; GET /messages?before=sequence; POST /messages",
+    "send_fields": [
+      "client_message_id",
+      "recipient_agent_id",
+      "sender_agent_id?",
+      "thread_id?",
+      "reply_to?",
+      "parts"
+    ],
+    "parts": [
+      "{kind:text,text:string}",
+      "{kind:data,data:object}"
+    ],
+    "bounds": {
+      "message_bytes": 32768,
+      "parts": 16,
+      "page": 100
+    },
+    "receipt": "POST /messages/{message}/receipts {recipient_agent_id:string}",
+    "receipt_semantics": "received only; no execution or acceptance authority",
+    "visibility": "shared with authorized project members; connector inbox restricted to owned connector agents",
+    "renew": "POST /integrations/{integration}/sessions; personal owner of an active connector only; new 8h token preserves agent ids and inbox; prior token remains valid until expiry or explicit revocation",
+    "pagination": {
+      "bounds": "after >= 0; before > 0; after/before/latest=true mutually exclusive",
+      "order": "items always ascending by sequence",
+      "next_cursor": "last returned sequence for after reads",
+      "previous_cursor": "first returned sequence for before reads; null on empty",
+      "has_more": "exactly computed using one lookahead row; direction older for latest/before, newer for after",
+      "scope": "connector and project permissions identical in every direction"
+    },
+    "retry": "current sender authorization required; identical accepted message returns original result even after recipient is revoked; changed content conflicts"
+  },
+  "tutorial": {
+    "read": "GET /api/v1/tutorials/personal-site",
+    "install": "POST /api/v1/projects/{project}/tutorial/personal-site; Idempotency-Key required; empty project only; atomic DRAFT_ONLY",
+    "plugin": "GET /api/v1/plugins/dsh-forgeflow-network/{file} public exact-file allowlist"
+  },
+  "external_protocol_conformance": {
+    "A2A": "NOT_CLAIMED",
+    "MCP": "NOT_CLAIMED",
+    "ACP": "DSH retains native implementation"
+  }
+}

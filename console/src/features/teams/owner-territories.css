@@ -1,0 +1,25 @@
+.owner-territories { margin-top: 20px; }
+.owner-intro { margin: 0 0 18px; max-width: 860px; }
+.owner-layout { display: grid; grid-template-columns: minmax(220px, .7fr) minmax(0, 2fr); gap: 24px; }
+.owner-context { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel3); align-self: start; }
+.owner-context dl { display: grid; gap: 5px; margin: 18px 0; font-size: 12px; }
+.owner-context dt { color: var(--muted); margin-top: 7px; }
+.owner-context dd { margin: 0; overflow-wrap: anywhere; }
+.owner-context select, .owner-editor select { width: 100%; min-width: 0; }
+.owner-editor { min-width: 0; }
+.owner-paths, .owner-diff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.owner-paths textarea { min-height: 146px; resize: vertical; white-space: pre; font: 12px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.owner-path-hint { font-size: 12px; line-height: 1.7; }
+.owner-note, .owner-preview { padding: 14px 16px; margin: 14px 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel3); }
+.owner-note p { margin-top: 0; }
+.owner-preview { background: var(--glass); backdrop-filter: blur(12px); }
+.owner-preview h3 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; }
+.owner-preview h3 span { margin-left: auto; color: var(--muted); font-size: 11px; font-weight: 400; }
+.owner-root-change { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; font-size: 12px; overflow-wrap: anywhere; }
+.owner-diff h4 { font-size: 12px; margin: 0; }
+.owner-diff p { margin: 10px 0 4px; font-size: 11px; }
+.owner-diff pre { max-height: 200px; margin: 0; padding: 10px; overflow: auto; border-radius: 6px; background: var(--panel2); font: 12px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.owner-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.owner-message { margin-bottom: 0; padding: 12px 14px; border-radius: 8px; background: var(--panel2); font-size: 12px; }
+@media (max-width: 850px) { .owner-layout { grid-template-columns: 1fr; gap: 16px; } }
+@media (max-width: 600px) { .owner-paths, .owner-diff { grid-template-columns: 1fr; gap: 10px; } .owner-actions button { flex-grow: 1; } }

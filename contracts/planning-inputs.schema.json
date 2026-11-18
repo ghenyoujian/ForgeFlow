@@ -1,0 +1,610 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data",
+    "read_model_version",
+    "observed_at",
+    "source",
+    "next_cursor"
+  ],
+  "properties": {
+    "data": {
+      "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningInputData"
+    },
+    "read_model_version": {
+      "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64",
+      "description": "Equals data.revision, the project observation cursor."
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "const": "postgres"
+    },
+    "next_cursor": {
+      "type": "null"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:forgeflow:planning-inputs:v1",
+  "title": "PlanningInputsResponse",
+  "description": "GET /api/v1/projects/{project}/planning-inputs response. Owner-authenticated, unpaged PostgreSQL REPEATABLE READ READ ONLY snapshot. All input collections and counters share one MVCC observation; no execution rights or result bytes are granted.",
+  "$defs": {
+    "Unsigned64": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "ResourceVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active_slot",
+        "coding_slot",
+        "cpu_units",
+        "memory_bytes",
+        "build_permit",
+        "gpu_permit",
+        "provider_inflight"
+      ],
+      "properties": {
+        "active_slot": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "coding_slot": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "cpu_units": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "memory_bytes": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "build_permit": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "gpu_permit": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "provider_inflight": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        }
+      },
+      "description": "All seven resource dimensions are required, including zeros. CPU units and memory bytes are integer resource-policy units; this vector does not prove OS or provider enforcement."
+    },
+    "PlanningProject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_id",
+        "name",
+        "root_path",
+        "authority_mode",
+        "data_origin",
+        "goal",
+        "technology_stack",
+        "timezone",
+        "paused",
+        "archived",
+        "revision"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "root_path": {
+          "type": "string"
+        },
+        "authority_mode": {
+          "enum": [
+            "MANAGED",
+            "OBSERVED_READ_ONLY"
+          ]
+        },
+        "data_origin": {
+          "enum": [
+            "NATIVE",
+            "IMPORTED",
+            "DEMO"
+          ]
+        },
+        "goal": {
+          "type": "string"
+        },
+        "technology_stack": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        }
+      }
+    },
+    "PlanningTeam": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_id",
+        "team_id",
+        "parent_team_id",
+        "name",
+        "paused",
+        "revision"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "team_id": {
+          "type": "string"
+        },
+        "parent_team_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        }
+      }
+    },
+    "PlanningResourcePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "worker_id",
+        "scope_id",
+        "parent_scope_id",
+        "project_id",
+        "team_id",
+        "limits",
+        "revision",
+        "paused"
+      ],
+      "properties": {
+        "worker_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scope_id": {
+          "type": "string"
+        },
+        "parent_scope_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "project_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "team_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limits": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/ResourceVector"
+        },
+        "revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "paused": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PlanningTaskCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_id",
+        "task_id",
+        "task_revision",
+        "flow_revision",
+        "title",
+        "owner_id",
+        "team_id",
+        "requirement_ids",
+        "read_set",
+        "write_set",
+        "dependencies",
+        "state",
+        "input_digest",
+        "resource_request",
+        "envelope",
+        "revision"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "task_revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "flow_revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "owner_id": {
+          "type": "string"
+        },
+        "team_id": {
+          "type": "string"
+        },
+        "requirement_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "read_set": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "write_set": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "state": {
+          "enum": [
+            "PLANNED",
+            "NEEDS_REVIEW",
+            "READY_FOR_ADMISSION",
+            "DEFERRED",
+            "REMOVED_FROM_PLAN"
+          ]
+        },
+        "input_digest": {
+          "type": "string"
+        },
+        "resource_request": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/ResourceVector"
+        },
+        "envelope": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "urn:forgeflow:execution:v1"
+            }
+          ],
+          "description": "Existing canonical execution-envelope DTO; its presence does not grant a lease or execution permission."
+        },
+        "revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        }
+      }
+    },
+    "PlanningOwnerTerritory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_id",
+        "include",
+        "exclude",
+        "revision"
+      ],
+      "properties": {
+        "owner_id": {
+          "type": "string"
+        },
+        "root_team_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        }
+      }
+    },
+    "PlanningSchedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_id",
+        "schedule_id",
+        "task_id",
+        "baseline_version",
+        "planned_start",
+        "planned_end",
+        "dependencies",
+        "revision"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string"
+        },
+        "schedule_id": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "baseline_version": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "planned_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "planned_end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64"
+        },
+        "effort_estimate": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "urn:forgeflow:task-estimate:v1#/$defs/EffortEstimate"
+            }
+          ]
+        }
+      }
+    },
+    "PlanningDocument": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "collection",
+            "value"
+          ],
+          "properties": {
+            "collection": {
+              "const": "owners"
+            },
+            "value": {
+              "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningOwnerTerritory"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "collection",
+            "value"
+          ],
+          "properties": {
+            "collection": {
+              "const": "task_estimates"
+            },
+            "value": {
+              "$ref": "urn:forgeflow:task-estimate:v1"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "collection",
+            "value"
+          ],
+          "properties": {
+            "collection": {
+              "const": "schedules"
+            },
+            "value": {
+              "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningSchedule"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "collection",
+            "value"
+          ],
+          "properties": {
+            "collection": {
+              "const": "queue_entries"
+            },
+            "value": {
+              "type": "object",
+              "description": "Retained queue document. Scenario extraction reads task_id and priority; this generic document collection has no enforced complete DTO schema."
+            }
+          }
+        }
+      ]
+    },
+    "PlanningResourceLimit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope_id",
+        "dimension",
+        "hard_limit",
+        "allocated"
+      ],
+      "properties": {
+        "scope_id": {
+          "type": "string"
+        },
+        "dimension": {
+          "enum": [
+            "active_slot",
+            "coding_slot",
+            "cpu_units",
+            "memory_bytes",
+            "build_permit",
+            "gpu_permit",
+            "provider_inflight"
+          ]
+        },
+        "hard_limit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "allocated": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        }
+      }
+    },
+    "PlanningInputData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project",
+        "tasks",
+        "teams",
+        "documents",
+        "resource_policies",
+        "resource_limits",
+        "completed_task_ids",
+        "active_task_ids",
+        "revision",
+        "planning_input_digest",
+        "as_of",
+        "source"
+      ],
+      "properties": {
+        "project": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningProject"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningTaskCard"
+          },
+          "description": "Current tasks except REMOVED_FROM_PLAN, ordered by task_id; completed tasks remain present."
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningTeam"
+          }
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningDocument"
+          }
+        },
+        "resource_policies": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningResourcePolicy"
+          },
+          "description": "Project policies plus all global/worker policies whose project_id is null."
+        },
+        "resource_limits": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/PlanningResourceLimit"
+          },
+          "description": "Current authoritative counters for those policies. Scenario computation requires exactly seven dimension rows per policy."
+        },
+        "completed_task_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "Tasks with SUCCEEDED attempts matching the current task_revision."
+        },
+        "active_task_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "Project task IDs with an attempt whose terminal_at is null; not a live-process or qualification assertion."
+        },
+        "revision": {
+          "$ref": "urn:forgeflow:planning-inputs:v1#/$defs/Unsigned64",
+          "description": "Project event_seq observed in this snapshot, not a planning object revision."
+        },
+        "planning_input_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Server-opaque semantic planning digest. Includes task definitions without revision/fence_epoch, teams, owner/estimate/schedule documents, queue task ID/priority, resource policies and completed task IDs. Excludes event cursor, allocation counters, active IDs, project DTO and observation times. Clients must echo it rather than recompute it."
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Database clock timestamp sampled during the repeatable-read transaction; envelope observed_at is sampled later by the API."
+        },
+        "source": {
+          "const": "POSTGRESQL_REPEATABLE_READ"
+        }
+      }
+    }
+  }
+}

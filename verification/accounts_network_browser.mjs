@@ -1,0 +1,150 @@
+// Real browser flows against an isolated server. Delayed/lost responses below
+// forward actual server results; no fabricated business responses.
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {randomUUID} from 'node:crypto';
+const require=createRequire(import.meta.url);
+const {chromium}=require('/home/chenyoujian/miniconda/lib/python3.13/site-packages/playwright/driver/package');
+const output=path.resolve(process.argv[2]);const run=JSON.parse(fs.readFileSync(path.join(output,'private.json'),'utf8'));
+const report={status:'RUNNING',checks:[],page_errors:[],model_calls:0,synthetic_accounts:true};
+const verify=(name,passed)=>{report.checks.push({name,passed:!!passed});assert.ok(passed,name);};
+const browser=await chromium.launch({executablePath:'/home/chenyoujian/.cache/ms-playwright/chromium-1247/chrome-linux64/chrome',headless:true,args:['--no-proxy-server']});
+const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce',timezoneId:'Asia/Shanghai'});
+const page=await context.newPage();page.on('pageerror',error=>report.page_errors.push(error.message));
+const shot=name=>page.screenshot({path:path.join(output,`accounts-${name}.png`),fullPage:false});
+const user=run.users[1];
+async function request(p,route,body,method='POST'){
+ const config=await p.evaluate(()=>({token:sessionStorage.getItem('forgeflow.owner-token'),workspace:sessionStorage.getItem('forgeflow.workspace')}));
+ const response=await p.request.fetch(run.base+'/api/v1'+route,{method:body===undefined?'GET':method,headers:{Authorization:`Bearer ${config.token}`,'X-ForgeFlow-Workspace':config.workspace,'Idempotency-Key':randomUUID()},data:body});
+ const result=await response.json();assert.ok(response.ok(),result.code||route);return result.data;
+}
+let other,mobile;
+try{
+ await page.goto(run.base+'/tutorial');await page.getByRole('heading',{name:'个人网站 · 从想法到协作交付',exact:true}).waitFor();
+ verify('tutorial is readable before login',await page.getByRole('button',{name:/创建工作区，邀请协作者/}).isVisible());
+ await page.getByRole('button',{name:'下一章',exact:true}).click();await page.getByRole('heading',{name:'把个人网站目标拆成任务',exact:true}).waitFor();
+ await page.getByLabel('我已阅读并核对这一章').check();verify('tutorial progress is explicitly user-confirmed',await page.getByLabel('我已阅读并核对这一章').isChecked());await shot('public-tutorial');
+ await page.goto(run.base+'/');await page.getByRole('button',{name:'注册账号',exact:true}).click();
+ await page.getByLabel('你的名字',{exact:true}).fill('Carol 协作验证');
+ const email='carol-'+randomUUID()+'@example.test';const password='local-browser-'+randomUUID();
+ await page.getByLabel('邮箱',{exact:true}).fill(email);await page.getByLabel('密码',{exact:true}).fill(password);await shot('registration');
+ await page.getByRole('button',{name:'创建账号与工作区',exact:true}).click();await page.getByLabel('切换协作工作区').waitFor();
+ verify('registration enters a personal workspace',await page.locator('.workspace-role').innerText()==='工作区所有者');
+ await page.goto(run.base+'/workspaces');await page.getByLabel('新工作区名称').fill('多人网站团队');await page.getByRole('button',{name:'创建工作区',exact:true}).click();
+ await page.waitForFunction(()=>document.querySelector('[aria-label="切换协作工作区"]')?.selectedOptions[0]?.text==='多人网站团队');
+ const workspace=await page.evaluate(()=>sessionStorage.getItem('forgeflow.workspace'));
+ verify('user can create and switch to an independent workspace',!!workspace);
+ await page.getByLabel('调整 Carol 协作验证 的角色',{exact:true}).waitFor();verify('last-owner actions explain the required ownership transfer',await page.getByLabel('调整 Carol 协作验证 的角色',{exact:true}).isDisabled()&&await page.getByText('工作区须保留一位所有者。退出或更改自己的角色前，请先将另一位成员设为所有者。',{exact:true}).isVisible());
+ await page.getByLabel('指定邮箱（可选）').fill(user.email);await page.getByRole('button',{name:'生成邀请链接',exact:true}).click();await page.getByLabel('邀请链接',{exact:true}).waitFor();
+ const invitation=await page.getByLabel('邀请链接',{exact:true}).inputValue();verify('invitation secret uses a URL fragment',new URL(invitation).hash.length===65&&!new URL(invitation).search);await shot('workspaces');
+ await page.goto(run.base+'/tutorial');await page.getByRole('button',{name:'创建案例项目',exact:true}).click();await page.getByRole('button',{name:'案例草案已创建',exact:true}).waitFor();
+ await page.getByRole('button',{name:'打开规划草案',exact:true}).click();await page.locator('.virtual-task-row').first().waitFor();
+ const project=new URL(page.url()).pathname.split('/')[2];verify('case creates twelve editable canonical tasks',await page.locator('.planning-match-count').innerText()==='12 / 12 张任务');
+ const rename=page.getByRole('button',{name:'重命名任务 brief',exact:true});await rename.click();await page.getByRole('textbox',{name:'编辑标题 brief',exact:true}).fill('我自己的个人网站目标');await page.keyboard.press('Enter');
+ await page.getByRole('button',{name:'保存新草案',exact:true}).click();await page.waitForURL(url=>/\/flows\/2$/.test(url.pathname));await page.getByRole('button',{name:'重命名任务 brief',exact:true}).waitFor();
+ verify('tutorial draft edits receive a server save confirmation',(await request(page,`/projects/${project}/flows/latest`)).tasks.some(t=>t.task_id==='brief'&&t.title==='我自己的个人网站目标'));await shot('planning');
+ const planningURL=page.url();await page.locator('.search-trigger').click();const searchDialog=page.getByRole('dialog',{name:'搜索项目与当前任务',exact:true});
+ await searchDialog.getByLabel('搜索关键字').fill('明确受众');await searchDialog.getByRole('button',{name:'搜索',exact:true}).click();
+ await searchDialog.getByRole('button',{name:'明确受众与网站目标',exact:true}).click();await searchDialog.waitFor({state:'detached'});
+ verify('search finds the current project task and opens its inspector',new URL(page.url()).pathname.endsWith('/tasks')&&new URL(page.url()).searchParams.get('task')==='brief');
+ await page.goto(planningURL);await page.getByRole('button',{name:'重命名任务 brief',exact:true}).waitFor();
+ other=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});const peer=await other.newPage();peer.on('pageerror',error=>report.page_errors.push(error.message));
+ await peer.goto(invitation);await peer.getByText('已收到工作区邀请。先注册或登录个人账号，再接受邀请。',{exact:true}).waitFor();
+ await peer.getByLabel('邮箱',{exact:true}).fill(user.email);await peer.getByLabel('密码',{exact:true}).fill(user.password);await peer.getByRole('button',{name:'进入工作区',exact:true}).click();
+ await peer.getByRole('button',{name:'接受邀请并加入',exact:true}).click();await peer.getByRole('heading',{name:'工作区与成员',exact:true}).waitFor();
+ verify('second user accepts the actual UI invitation',await peer.getByLabel('切换协作工作区').inputValue()===workspace);
+ // A real second client changes the same base revision while local input exists.
+ await page.getByRole('button',{name:'重命名任务 brief',exact:true}).click();await page.getByRole('textbox',{name:'编辑标题 brief',exact:true}).fill('冲突后仍保留的个人输入');await page.keyboard.press('Enter');
+ const flow=await request(peer,`/projects/${project}/flows/latest`);const current=await request(peer,`/flows/${encodeURIComponent(project+':'+flow.flow_revision)}/context/current`);
+ await request(peer,`/projects/${project}/flow-revisions`,{flow,context:current,expected_revision:flow.revision});
+ await page.getByText('服务端版本已变化。草稿输入已保留，请核对后再保存。',{exact:false}).waitFor();
+ verify('two-client version conflict preserves the local input',(await page.locator('.virtual-task-row[data-task-id="brief"] strong').innerText())==='冲突后仍保留的个人输入');
+ await page.getByRole('button',{name:'保留输入并重新预览',exact:true}).click();await page.getByRole('button',{name:'保存新草案',exact:true}).click();await page.waitForURL(url=>/\/flows\/3$/.test(url.pathname));
+ verify('conflict recovery saves through canonical version checks',(await request(peer,`/projects/${project}/flows/latest`)).tasks.some(t=>t.title==='冲突后仍保留的个人输入'));
+ await peer.goto(run.base+`/projects/${project}/agent-network`);await peer.getByText('连接我的 DSH',{exact:true}).click();
+ const connection=peer.waitForResponse(response=>response.request().method()==='POST'&&response.url().endsWith('/agent-network/integrations'));
+ await peer.getByRole('button',{name:'生成项目连接凭证',exact:true}).click();const connector=(await (await connection).json()).data;await peer.getByRole('dialog').waitFor();
+ verify('DSH credential is masked in the user interface',(await peer.getByLabel('项目通讯凭证').getAttribute('type'))==='password');await peer.getByRole('button',{name:'关闭检查器',exact:true}).click();await peer.locator('.drawer-backdrop').waitFor({state:'detached'});
+ const registered=await peer.request.post(run.base+`/api/v1/projects/${project}/agent-network/agents`,{headers:{Authorization:`Bearer ${connector.token}`,'X-ForgeFlow-Workspace':workspace},data:{native_agent_id:'browser-fixture-'+randomUUID(),name:'Bob 的 DSH Agent'}});assert.equal(registered.status(),200);const agent=(await registered.json()).data;
+ await page.goto(run.base+`/projects/${project}/agent-network`);await page.getByRole('combobox',{name:'发给',exact:true}).selectOption(agent.agent_id);
+ await page.getByLabel('消息',{exact:true}).fill('请先补齐手机端联系表单的错误反馈。');await context.setOffline(true);await page.getByRole('button',{name:'发送消息',exact:true}).click();
+ await page.getByRole('button',{name:'发送消息',exact:true}).waitFor();verify('network failure retains the message draft',await page.getByLabel('消息',{exact:true}).inputValue()==='请先补齐手机端联系表单的错误反馈。');await context.setOffline(false);
+ await page.reload();await page.getByRole('heading',{name:'Agent 通讯',exact:true}).waitFor();
+ verify('reload restores the unsent message and exact recipient from this tab',await page.getByLabel('消息',{exact:true}).inputValue()==='请先补齐手机端联系表单的错误反馈。'&&await page.getByLabel('发给',{exact:true}).inputValue()===agent.agent_id);
+ await page.getByRole('button',{name:'发送消息',exact:true}).click();await page.getByText('消息已由服务端保存，等待对方接收',{exact:true}).waitFor();
+ await peer.getByText('请先补齐手机端联系表单的错误反馈。',{exact:true}).waitFor();verify('peer user sees the persisted UI message',await peer.locator('.network-message').count()===1);
+ const inbox=await (await peer.request.get(run.base+`/api/v1/projects/${project}/agent-network/messages`,{headers:{Authorization:`Bearer ${connector.token}`}})).json();
+ await peer.request.post(run.base+`/api/v1/projects/${project}/agent-network/messages/${inbox.data.items[0].message_id}/receipts`,{headers:{Authorization:`Bearer ${connector.token}`},data:{recipient_agent_id:agent.agent_id}});
+ await page.getByText('已确认收到',{exact:true}).waitFor();verify('recipient receipt updates without full-page navigation',true);await shot('agent-network');
+ const sendBox=await page.getByRole('button',{name:'发送消息',exact:true}).boundingBox();verify('desktop composer is fully visible above the fixed footer',sendBox&&sendBox.y>=0&&sendBox.y+sendBox.height<=page.viewportSize().height-50);
+ // Keep the actual upstream response pending while the user writes a second
+ // message. A completed save must not erase the new input.
+ let releaseResponse,savedResponse;
+ const unrelatedReads=[];const observeUnrelated=request=>{if(request.method()==='GET'&&/^\/api\/v1\/(projects|portfolio|resource-usage|resources)$/.test(new URL(request.url()).pathname))unrelatedReads.push(request.url());};page.on('request',observeUnrelated);
+ const responseGate=new Promise(resolve=>{releaseResponse=resolve;});
+ const savedGate=new Promise(resolve=>{savedResponse=resolve;});
+ const routePattern='**/agent-network/messages';
+ const holdResponse=async route=>{
+  if(route.request().method()!=='POST')return route.continue();
+  const upstream=await route.fetch();assert.equal(upstream.status(),200);savedResponse();await responseGate;await route.fulfill({response:upstream});
+ };
+ await page.route(routePattern,holdResponse);
+ await page.getByLabel('消息',{exact:true}).fill('这条消息已保存，等待确认。');
+ await page.getByRole('button',{name:'发送消息',exact:true}).click();await savedGate;
+ await page.getByLabel('消息',{exact:true}).fill('发送等待期间写下的新草稿');releaseResponse();
+ await page.getByText('消息已由服务端保存，等待对方接收',{exact:true}).waitFor();await page.unroute(routePattern,holdResponse);
+ verify('save confirmation preserves text typed while the real response was pending',await page.getByLabel('消息',{exact:true}).inputValue()==='发送等待期间写下的新草稿');
+ page.off('request',observeUnrelated);verify('message send does not invalidate unrelated active project and resource queries',unrelatedReads.length===0);
+ await page.goto(run.base+'/tutorial');await page.getByRole('heading',{name:'个人网站 · 从想法到协作交付',exact:true}).waitFor();
+ await page.goto(run.base+`/projects/${project}/agent-network`);await page.getByRole('heading',{name:'Agent 通讯',exact:true}).waitFor();
+ verify('leaving and returning to the project preserves its message draft',await page.getByLabel('消息',{exact:true}).inputValue()==='发送等待期间写下的新草稿');
+ // Accept a real message then drop its response. Reload + retry must keep the
+ // same client_message_id, producing exactly one persisted message.
+ let droppedId;
+ const dropResponse=async route=>{
+  if(route.request().method()!=='POST')return route.continue();
+  droppedId=route.request().postDataJSON().client_message_id;
+  const upstream=await route.fetch();assert.equal(upstream.status(),200);await route.abort('failed');
+ };
+ await page.route(routePattern,dropResponse);
+ await page.getByLabel('消息',{exact:true}).fill('保存已发生但响应丢失时安全重试');await page.getByRole('button',{name:'发送消息',exact:true}).click();
+ await page.getByRole('button',{name:'发送消息',exact:true}).waitFor();await page.unroute(routePattern,dropResponse);
+ await page.reload();await page.getByRole('heading',{name:'Agent 通讯',exact:true}).waitFor();
+ const retryResponse=page.waitForResponse(response=>response.request().method()==='POST'&&response.url().endsWith('/agent-network/messages'));
+ await page.getByRole('button',{name:'发送消息',exact:true}).click();const retried=(await (await retryResponse).json()).data;
+ verify('lost response retry after reload reuses the durable message identity',retried.client_message_id===droppedId&&retried.replayed===true);
+ await page.getByText('消息已由服务端保存，等待对方接收',{exact:true}).waitFor();
+ const directorySearch=page.getByLabel('搜索 Agent 或协作者',{exact:true});await directorySearch.fill('不存在的协作者');await page.getByText('没有匹配的 Agent，请调整搜索词。',{exact:true}).waitFor();
+ verify('agent directory search exposes an honest empty state',await page.locator('.network-agent-list>button').count()===0);await directorySearch.fill('Bob');verify('agent search matches the owner and agent name',await page.locator('.network-agent-list>button').count()===1);await directorySearch.fill('');
+ const history=[];
+ for(let index=0;index<205;index++)history.push(await request(page,`/projects/${project}/agent-network/messages`,{client_message_id:'browser-history-'+index,recipient_agent_id:agent.agent_id,parts:[{kind:'text',text:`浏览历史 ${String(index).padStart(3,'0')}`}]}));
+ const reads=[];const observeHistory=request=>{if(request.method()==='GET'&&request.url().includes(`/projects/${project}/agent-network/messages?`))reads.push(new URL(request.url()).search);};page.on('request',observeHistory);
+ await page.getByRole('button',{name:'刷新',exact:true}).click();await page.getByText('浏览历史 204',{exact:true}).waitFor();
+ verify('latest view reads a bounded hundred messages with one query mode',await page.locator('.network-message').count()===100&&reads.length>0&&reads.every(q=>q==='?latest=true'));
+ await page.getByRole('button',{name:'查看较早消息',exact:true}).click();await page.getByText('浏览历史 104',{exact:true}).waitFor();
+ verify('history opens the previous hundred and pauses automatic log refresh',await page.locator('.network-message').count()===100&&await page.getByText('历史消息 · 自动同步已暂停',{exact:true}).isVisible());
+ await page.getByRole('button',{name:'查看较早消息',exact:true}).click();await page.getByText('浏览历史 000',{exact:true}).waitFor();
+ verify('oldest page has an exact boundary and no phantom next page',await page.locator('.network-message').count()===8&&await page.getByRole('button',{name:'查看较早消息',exact:true}).isDisabled());
+ await page.getByRole('button',{name:'返回最新消息',exact:true}).click();await page.getByText('浏览历史 204',{exact:true}).waitFor();verify('one action returns to the current collaboration window',await page.locator('.network-message').count()===100);
+ await context.setOffline(true);await page.getByText('连接中断，正在重试',{exact:true}).waitFor();verify('offline log retains its last confirmed content',await page.locator('.network-message').count()===100);await context.setOffline(false);await page.getByRole('button',{name:'立即重试',exact:true}).click();await page.getByText('立即重试',{exact:true}).waitFor({state:'detached'});verify('successful reconnect clears the stale read error',await page.locator('.network-read-error').count()===0);page.off('request',observeHistory);await shot('network-history');
+ await page.goto(run.base+'/workspaces');await page.getByLabel('调整 bob 的角色',{exact:true}).selectOption('VIEWER');await page.getByText('成员角色已更新',{exact:true}).waitFor();
+ await peer.reload();await peer.getByRole('heading',{name:'Agent 通讯',exact:true}).waitFor();verify('viewer interface disables message submission',await peer.getByRole('button',{name:'发送消息',exact:true}).isDisabled());
+ const config=await page.evaluate(()=>({token:sessionStorage.getItem('forgeflow.owner-token'),workspace:sessionStorage.getItem('forgeflow.workspace')}));
+ mobile=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',isMobile:true,deviceScaleFactor:1});
+ await mobile.addInitScript(config=>{sessionStorage.setItem('forgeflow.owner-token',config.token);sessionStorage.setItem('forgeflow.personal-account','1');sessionStorage.setItem('forgeflow.workspace',config.workspace);sessionStorage.setItem('forgeflow.workspace-role','OWNER');localStorage.setItem('forgeflow.theme','dark');},config);
+ const phone=await mobile.newPage();phone.on('pageerror',error=>report.page_errors.push(error.message));
+ await phone.goto(run.base+'/tutorial');await phone.getByRole('heading',{name:'个人网站 · 从想法到协作交付',exact:true}).waitFor();
+ verify('mobile tutorial stays inside the viewport',await phone.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1));
+ verify('reduced motion removes chapter entrance animation',await phone.locator('.lesson-content').evaluate(el=>getComputedStyle(el).animationName)==='none');
+ await phone.screenshot({path:path.join(output,'accounts-tutorial-mobile-dark.png')});
+ await phone.goto(run.base+`/projects/${project}/agent-network`);await phone.getByRole('heading',{name:'Agent 通讯',exact:true}).waitFor();verify('mobile communication stays inside the viewport',await phone.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1));await phone.screenshot({path:path.join(output,'accounts-network-mobile-dark.png')});
+ await page.goto(run.base+'/workspaces');await page.keyboard.press('Tab');verify('keyboard focus remains visibly available',await page.evaluate(()=>!!document.activeElement&&document.activeElement!==document.body));
+ await page.getByLabel('显示名称',{exact:true}).fill('待保存的个人名称');await page.getByLabel('当前密码',{exact:true}).fill('incorrect-current-password');await page.getByLabel('新密码',{exact:true}).fill('new-valid-'+randomUUID());await page.getByRole('button',{name:'更新密码',exact:true}).click();await page.getByRole('alert').getByText('邮箱或密码不正确',{exact:true}).waitFor();verify('wrong current password keeps the current account signed in',await page.getByRole('heading',{name:'工作区与成员',exact:true}).isVisible());
+ await page.getByLabel('当前密码',{exact:true}).fill(password);await page.getByLabel('新密码',{exact:true}).fill('changed-browser-'+randomUUID());await page.getByRole('button',{name:'更新密码',exact:true}).click();await page.getByText('密码已更新；其他登录与 DSH 连接凭证已失效，请重新签发',{exact:true}).waitFor();verify('password renewal retains the workspace and visible save confirmation',await page.getByLabel('切换协作工作区').inputValue()===workspace);verify('credential renewal preserves other unsaved profile input',await page.getByLabel('显示名称',{exact:true}).inputValue()==='待保存的个人名称');
+ const legacy=await browser.newContext();const legacyPage=await legacy.newPage();await legacyPage.goto(run.base+'/');await legacyPage.getByText('高级登录方式',{exact:false}).click();await legacyPage.getByRole('button',{name:'使用部署管理员密码',exact:true}).click();await legacyPage.getByLabel('管理员密码',{exact:true}).fill(run.password);await legacyPage.getByRole('button',{name:'进入工作区',exact:true}).click();await legacyPage.getByRole('heading',{name:'项目组合',exact:true}).waitFor();verify('legacy administrator password login remains available',true);await legacy.close();
+ verify('no browser JavaScript errors',report.page_errors.length===0);report.status='PASS';
+}catch(error){report.status='FAIL';report.error=error.message;await shot('failure');throw error;}
+finally{await browser.close();fs.writeFileSync(path.join(output,'accounts-browser-report.json'),JSON.stringify(report,null,2)+'\n');}
+process.stdout.write(JSON.stringify({status:report.status,checks:report.checks.length,model_calls:0})+'\n');

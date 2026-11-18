@@ -1,0 +1,30 @@
+# P0-02 当前 Store 源码到隔离数据库的最小构建路径（DRAFT，NOT_RUN）
+
+本文仅为研究草案与未来方案，不授权构建、数据库操作或 Gate 状态变化；文中“本轮”指草案调查轮次。
+
+## 已观察条件与不越界原则
+
+- 本轮未执行 Cargo、Git、数据库、构建产物或修改主树。`Store::migrate` 通过 `sqlx::migrate!("../../migrations")` 编译期嵌入迁移，并在专属连接上执行 `run_direct`；捕获源码与 `Cargo.lock` 的两个摘要不能认证既有二进制的完整编译输入或 25 个内嵌迁移。[r39 历史探针观察](/home/chenyoujian/.cache/forgeflow-g0-continuation-20261116/r39-p002-store-supervisor-v2-live/receipt.json)是非资格证据。
+- P0-01 的研究 collector 仍不认证调用者对不支持特征的声明、真实源和原子性；在完整候选被独立校验前不得把其 digest 当正式来源。P0-05 的 `run_workload` 默认走 v2 clean `snapshot.review` 并以 HEAD 对象重建，不能绑定 dirty/index/untracked 候选。P0-05 本身依赖 P0-03/P0-04；P0-02 guard 注释要求受控 P0-05 构建执行器，因而是 guard 到执行器的实现耦合与潜在依赖循环，并非机器可读任务 DAG 中已证明的显式环。P0-02 独立构建条件不得被写成 P0-05 Gate 已通过。
+- 现有 P0-05 runner 写死 `TARGET=/home/chenyoujian/.cache/forgeflow-control-target` 和共享 `.build.lock`，`safe_environment` 写死对应 CARGO_TARGET_DIR，不支持 CLI 配置替代 target；真实调用 `scan_target` 观测 BLOCKED，已分配字节下界 2148556800 > 固定 2147483648、5237 项且见硬链接。遍历可能改变 atime；实际总量与持续状态未知。挂载 `/dev/sdd` 当前 ext4 选项未列 prjquota/pquota，`lsattr -pd` 所见 target project 0；不能以磁盘可用约 885 GB 替代项目硬配额，也不能清理已有缓存绕过。
+- 根 cgroup 的 `memory.max`、`pids.max` 为 max，`cpu.max=max 100000`；`/sys/fs/cgroup` root:root 且当前主体无写权限。MemAvailable 约 10 GiB 只是瞬时观测，不是聚合内存/进程隔离证明。任何缓存、配额或 mount 状态均需执行前重新核验。
+
+## 拟登记的独立 P0-02 最小执行器（尚无实现）
+
+1. A00 将新卡、精确读写集、A01/A10 责任、输入 SHA、预算和回滚登记；必须将此编译工作定位为 P0-02 的非 Gate 依赖，不把 P0-05 或 P0-03 标通过。无需修改已执行的迁移文件、数据库 guard 或现有工作树。至少固定候选根、P0-01 manifest+blob bundle、独立 review、当前源码的 Cargo.toml/Cargo.lock、所有 workspace manifest、25 个迁移原始字节与各 SHA-256/SHA-384；数量以批准候选的完整清单为准，本轮期待是 25。
+2. 编译源只使用 P0-01 重建的完整私有候选：保留 HEAD、index、worktree、untracked 和已批准排除语义，Rust workspace 按其 Cargo.lock 完整解析；构建前后由独立 Oracle 比对文件集、字节、可执行位来源及根/目录端点，未知/不完整/冲突直接 INCONCLUSIVE，不能用 HEAD 覆盖本地修改。必须先完成本目录可恢复性及源/主体/lease 的实际证明，当前仅研究采集器不能提供该证明。
+3. 调用方持有现有 `/home/chenyoujian/.cache/forgeflow-build-checkpoints/.build.lock` 独占锁并核对进程使用情况；不能因 `flock` 成功推断其他非协作构建不存在。用经审计的 bwrap user/mount/PID/network 命名空间，只读绑定冻结候选、已固定工具链/依赖缓存及必要系统库，不绑定用户工作树/用户数据库，清空 PG*/DATABASE_URL、代理和不需要的启动变量。构建脚本和 proc macro 视为可执行不可信代码；只读挂载、无网络与私有 writable area 须真实验证。
+4. 不接触旧 target：研究方案是在该 namespace 中为 `CARGO_TARGET_DIR=/home/chenyoujian/.cache/forgeflow-control-target` 提供**全新、无宿主旧 target 绑定**的 tmpfs 挂载，大小事先固定 2 GiB，`CARGO_BUILD_JOBS=2`、`CARGO_INCREMENTAL=0`；这保留 AGENTS 指定路径字符串并提供 target 文件系统容量上限，但不是现有 P005 ext4 project quota，也不使宿主旧 target 回到预算以内。不能因为路径字符串相同就认定 tmpfs 方案符合 AGENTS 的真实路径语义、共享预算或现有 P0-05 ext4 配额。须由 A00 按现行规则及既有授权判定并登记适用条件；未能满足则保持 BLOCKED，不能把临时 target 分组避开总预算。先单独验证 tmpfs 上限、禁止写出只读绑定、空间不足行为、保留退出/日志与最终 target 消失/产物导出；不以可用磁盘或 RLIMIT_FSIZE 代替聚合 quota。2 GiB 全新编译是否足够尚未知，空间不足如实失败，不事后调低范围或扩容冒充同次指标。tmpfs 占内存/交换，必须另有经证明的聚合 cgroup 内存/CPU/pids 和后代收口策略；当前未有可写 cgroup 委派，不能宣称已具备。
+5. 当前 `control` 内没有 `rust-toolchain.toml` 或 `rust-toolchain`，故不得将稳定频道名称当成固定编译器；实际解析还可能受祖先目录、`RUSTUP_TOOLCHAIN`、rustup overrides 和 Cargo 配置影响。登记实际选择的 toolchain 目录、rustup shim、真实 rustc/cargo 及动态库/标准库、`rustc -Vv` 和 `cargo --version`、target triple、所有参与生效的 Cargo 配置并固定 digest；环境只提供审定的显式 `RUSTUP_TOOLCHAIN`/`RUSTUP_HOME`，禁用或审查未登记覆盖。只读端点观测：`~/.rustup/settings.toml` 的 default 为 `stable-x86_64-unknown-linux-gnu`；shim SHA-256 `4acc9acc76d5079515b46346a485974457b5a79893cfb01112423c89aeb5aa10`，该目录 rustc SHA `bff349e72704ff70bc08a234a3847338e797065bbedde5e556808bc87b7bf7c6`、cargo SHA `841072d1d92f9e841d9ba5b0814182a0adf064acf4527cd120967b7bc49dcb66`，control `.cargo/config.toml` SHA `c47ca4ffd433f408f2d37eef83a0149c8c2fde7161c24b3a20d8b3b20f29713b`。这些是端点观测，不认证实际工具选择或连续性，运行前须重新核验。另固定锁文件、SQLx 0.8.6 的全部依赖/feature、build-script/proc-macro 输入、离线 registry 和 compiler cache 的摘要与语义；保证 `--locked --offline`，缺失依赖明确 BLOCKED，不改 lock 或静默联网。控制层 pre-open 限额日志并保存完整工具 stdout/stderr、状态和环境摘要；对每个直属子进程只使用 held pidfd，超时/崩溃/后代未证均 UNKNOWN；不得凭数字 PID 猜杀或清理旧目录。
+6. 最小拟执行命令（未执行）为 `cargo test --locked --offline -p forgeflow-store --test migration_recovery --no-run --message-format=json-render-diagnostics`，从绑定 `/src` 的候选工作目录调用；没有数据库 URL，`--no-run` 不执行测试，但 Cargo build scripts/proc macros 仍会执行。实际 argv、路径、分母与资源合同先单独审查并冻结。`migration_recovery.rs` 通过 `env!("CARGO_MANIFEST_DIR")` 在测试二进制中编译期嵌入 `crates/store` 的绝对路径，再从该路径定位 `../../ops/ecp/test_database.sh`；因此测试执行环境必须在完全相同的绝对路径重新绑定经认证的同一候选与 guard，并在执行前核对其身份和摘要。不得将该路径换成实时用户工作树、错误候选或只依据字符串声称相同；若无法绑定同一身份则 BLOCKED。读取 Cargo JSON 的 compiler-artifact 确定**实际** test executable，独立 hash 产物和 build log、捕获编译进程/工具/依赖证据、复核候选与 25 SQL 摘要。仅成功编译不证明 Store 行为、迁移或 Gate；它也不能直接证明宏实际嵌入的每条字节，需追加可复核关联。
+7. 进一步拟登记仅供该候选构建的 A01/A10 对照测试，固定 `sqlx::migrate!("../../migrations")` 的 `Migrator::iter()`，输出版本、description、migration_type、checksum 与 SQL 文本摘要；独立研究 Oracle 从候选同一组原始 SQL 计算 SQLx 0.8.6 SHA-384、名称和完整分母，再比较 compile-time 输出；这说明同候选/宏对照，不自动证明任意已编译二进制来源。更强的实际关联需把该测试与真实 `Store::migrate` 的数据库读回绑定同一已 hash 的可执行产物与候选编译窗口。
+8. 真实 DB 阶段另开新 cluster / 新私有 Unix socket / ecp_disposable_* 数据库；禁 TCP、净化 PG*/DATABASE_URL，记录 server 生命周期、临时目录和资源上限，只把私有 socket 授予测试 namespace。`migration_recovery` 在连接前调用编译期 `CARGO_MANIFEST_DIR` 路径下的 `test_database.sh` guard，而 guard 在所有本地前置条件匹配时仍因客户端与服务端身份未认证而返回 INCONCLUSIVE；缺失或错误输入也可能提前返回 BLOCKED。执行时须再次证实同路径的候选与 guard 身份，不可绕过、伪造 guard 或直接指向用户库。需先实现经独立审查的 client/server/peer 与测试执行身份绑定，再由 A01/A10 为独立候选准备明确的真实 Store 入口；`planning_views` 会 CREATE/DROP schema，只能在已经证明隔离的新库中运行。一次 connection 的 SO_PEERCRED 不认证后续 SQLx connection，server/后代未知不得算 PASS。
+9. 首个空库 test 应实际调用 Store::migrate，并由独立连接完整读取 `_sqlx_migrations` 的版本、description、success、SHA-384 和 schema 权威事实；25/25 匹配只能证明这组行，仍须测试重入、失败与取消时 live-session 锁、错误目标拒绝、断连、历史 N−1 夹具/回退、并发和原始记录。所有必需用例分母非零且无跳过、失败或未运行，产物、进程、DB 与候选绑定一致，按计划逐项形成 G0 证据；任何缺项保持 NOT_RUN/BLOCKED/INCONCLUSIVE。正式发布仍不由此单卡或测试结果决定。
+
+## 开工前缺口和不证明的事项
+
+当前 P001 完整候选/独立身份、可受控构建的限额位置及进程树、当前 Store 二进制、guard 的实际连接身份、独立数据库真值均未建立。优先实现/低成本验证 tmpfs/进程监督与 P001 完整候选，再注册最小构建；不要先运行大规模构建或改变现有资源预算。本方案为可审设计，不建立 lease、不获取权限、不运行任何二进制，也不使 P002/P005/G0 状态变化。
+
+本 v2 在保留 v1 的基础上，澄清 guard 与 P0-05 是代码耦合而非已证实的 DAG 环；补充固定实际 Rust 工具链/Cargo 配置，以及测试运行时绑定编译期绝对源码与 guard 路径。tmpfs 只作为待评估替代方案，不自动满足现有 target 或 ext4 quota 合同。
+
+本 v3 保留 v2，进一步限定 guard 的 INCONCLUSIVE 只适用于本地前置条件均匹配但身份未认证的路径；缺失或错误输入可返回 BLOCKED。

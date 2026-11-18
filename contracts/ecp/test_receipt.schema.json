@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DRAFT_NOT_ADMITTED",
+  "title": "ForgeFlow ECP test receipt v1",
+  "required": ["schema_version", "product_gate_effect", "status", "suite_id", "source_sha", "checks", "denominator"],
+  "properties": {
+    "schema_version": {"const": "forgeflow.ecp-test-receipt.v1"},
+    "product_gate_effect": {"const": "NONE"},
+    "status": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT_RUN", "INCONCLUSIVE"]},
+    "suite_id": {"type": "string", "minLength": 1},
+    "source_sha": {"type": ["string", "null"]},
+    "checks": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "denominator": {"type": "object", "required": ["total", "passed", "failed", "blocked", "not_run", "inconclusive"], "additionalProperties": false, "properties": {"total": {"type": "integer", "minimum": 1}, "passed": {"type": "integer", "minimum": 0}, "failed": {"type": "integer", "minimum": 0}, "blocked": {"type": "integer", "minimum": 0}, "not_run": {"type": "integer", "minimum": 0}, "inconclusive": {"type": "integer", "minimum": 0}}}
+  }
+}

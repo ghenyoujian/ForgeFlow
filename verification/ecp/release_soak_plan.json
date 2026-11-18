@@ -1,0 +1,25 @@
+{
+  "schema_version": "forgeflow.ecp-release-soak-plan.v1",
+  "status": "NOT_RUN",
+  "qualification": "NOT_RUN",
+  "product_gate_effect": "NONE",
+  "duration_hours": 72,
+  "source_sha_required": true,
+  "model_calls": "provider-authorized-only",
+  "profiles": [
+    {"name": "workspace-message-idempotency", "channels": 32, "faults": ["restart", "network_partition", "duplicate_request"]},
+    {"name": "controlled-attempt-recovery", "channels": 32, "faults": ["worker_loss", "lease_expiry", "stale_generation"]},
+    {"name": "native-observation", "channels": 32, "faults": ["provider_error", "unknown_event", "receipt_delay"]},
+    {"name": "backup-restore-observer", "channels": 32, "faults": ["backup_verify", "restore_rehearsal", "storage_growth"]}
+  ],
+  "required_oracles": ["postgresql", "filesystem", "git", "process_table", "browser_or_api"],
+  "acceptance": {
+    "unexplained副作用": 0,
+    "duplicate_business_commits": 0,
+    "old_generation_successes": 0,
+    "unknown_results_auto_settled": 0,
+    "data_loss": 0
+  },
+  "evidence_outputs": ["source-manifest.json", "build-manifest.json", "raw-events.ndjson", "oracle-report.json", "result.json"],
+  "current_run": null
+}

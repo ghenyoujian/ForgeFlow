@@ -1,0 +1,6 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object","additionalProperties":false,"x-status":"DRAFT_NOT_ADMITTED",
+  "required":["principal_id","display_name","executor_kinds","project_set","request_key"],
+  "properties":{"principal_id":{"type":"string","minLength":1},"display_name":{"type":"string","minLength":1},"executor_kinds":{"type":"array","minItems":1,"items":{"type":"string"}},"project_set":{"type":"array","items":{"type":"string"}},"request_key":{"type":"string","minLength":16,"maxLength":128}}
+}

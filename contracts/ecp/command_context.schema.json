@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DRAFT_NOT_ADMITTED",
+  "title": "ForgeFlow ECP command context v1",
+  "required": ["schema_version", "operation_id", "principal_id", "workspace_id", "expected_revision", "idempotency_key", "request_digest", "trace_id"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "operation_id": {"type": "string", "minLength": 1},
+    "principal_id": {"type": "string", "minLength": 1, "readOnly": true},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "project_id": {"type": ["string", "null"]},
+    "capability_grant_id": {"type": ["string", "null"]},
+    "authorization_epoch": {"type": ["integer", "string"], "minimum": 0},
+    "expected_revision": {"type": "object", "required": ["kind", "value"], "additionalProperties": false, "properties": {"kind": {"enum": ["object", "membership", "lease_generation", "create_if_absent"]}, "value": {"type": "string", "minLength": 1}}},
+    "idempotency_key": {"type": "string", "minLength": 16, "maxLength": 128},
+    "request_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "trace_id": {"type": "string", "minLength": 1, "maxLength": 128}
+  }
+}

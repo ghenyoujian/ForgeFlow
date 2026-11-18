@@ -1,0 +1,1675 @@
+{
+  "schema_version": "forgeflow.routes.v1",
+  "routes": [
+    {
+      "path": "/api/v1/account",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workspaces::account).patch(workspaces::update_account)"
+    },
+    {
+      "path": "/api/v1/account/password",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workspaces::password)"
+    },
+    {
+      "path": "/api/v1/artifacts/{artifact}/content",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workers::artifact_content),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::attempt)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/author-custody",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(author_custody::status)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/author-stop-observation",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(author_custody::observe),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/bindings",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workers::bindings)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/cancel",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::cancel)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/close-author-retain-custody",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(author_custody::close),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/control",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workers::control)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/execution-bindings",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workers::bindings),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/execution-result",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workers::worker_result),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/gateway-scope",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workers::gateway_scope),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/handoff-result",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(handoff::worker_result)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/heartbeat",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workers::lease_heartbeat),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/integration-recovery",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(recovery::integration_recovery)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/logs",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workers::logs)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/native-controller",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(collaboration::native_controller)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/native-model",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(native_models::forward).layer(DefaultBodyLimit::max(8 * 1024 * 1024))"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/release-stopped-physical-resources",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(author_custody::release_physical)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/verify",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(operations::verify)"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/verify-and-integrate",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(operations::verify_integrate),"
+    },
+    {
+      "path": "/api/v1/attempts/{attempt}/worker-events",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workers::worker_event),"
+    },
+    {
+      "path": "/api/v1/backup-readiness",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(maintenance::backup_readiness)"
+    },
+    {
+      "path": "/api/v1/backups",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(maintenance::backups).post(maintenance::create_backup)"
+    },
+    {
+      "path": "/api/v1/backups/{backup}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(maintenance::backup)"
+    },
+    {
+      "path": "/api/v1/backups/{backup}/archive",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(maintenance::backup_archive)"
+    },
+    {
+      "path": "/api/v1/backups/{backup}/restore-preview",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(maintenance::restore_preview)"
+    },
+    {
+      "path": "/api/v1/contracts/{contract}/freeze-requests",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::freeze_contract),"
+    },
+    {
+      "path": "/api/v1/decisions",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(decisions::global_list)"
+    },
+    {
+      "path": "/api/v1/events",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(events_query)"
+    },
+    {
+      "path": "/api/v1/executors",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::executors)"
+    },
+    {
+      "path": "/api/v1/executors/{executor}/probe",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::probe_executor)"
+    },
+    {
+      "path": "/api/v1/flows/{flow}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::flow)"
+    },
+    {
+      "path": "/api/v1/flows/{flow}/checks",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::check_flow)"
+    },
+    {
+      "path": "/api/v1/flows/{flow}/commit",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::commit_flow)"
+    },
+    {
+      "path": "/api/v1/flows/{flow}/context",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::flow_context)"
+    },
+    {
+      "path": "/api/v1/flows/{flow}/context/current",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::current_flow_context),"
+    },
+    {
+      "path": "/api/v1/flows/{flow}/tasks/{task}/execution-templates",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(templates::bind),"
+    },
+    {
+      "path": "/api/v1/invitations/accept",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workspaces::accept)"
+    },
+    {
+      "path": "/api/v1/logout",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "auth.json",
+      "handlers": "post(logout)"
+    },
+    {
+      "path": "/api/v1/me",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "auth.json",
+      "handlers": "get(me)"
+    },
+    {
+      "path": "/api/v1/openapi.json",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(openapi)"
+    },
+    {
+      "path": "/api/v1/operations/{operation}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(operations::get)"
+    },
+    {
+      "path": "/api/v1/plugins/dsh-forgeflow-network/{file}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(tutorial::plugin_file)"
+    },
+    {
+      "path": "/api/v1/portfolio",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::portfolio)"
+    },
+    {
+      "path": "/api/v1/project-probes",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::probe_repository)"
+    },
+    {
+      "path": "/api/v1/projects",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::projects).post(catalog::create_project),"
+    },
+    {
+      "path": "/api/v1/projects/{project}",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::project).patch(catalog::update_project),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/admissions",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::admit)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/agent-network/agents",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(agent_network::agents).post(agent_network::register)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/agent-network/integrations",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(agent_network::integrations).post(agent_network::connect)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/agent-network/integrations/{integration}/revoke",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(agent_network::revoke)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/agent-network/integrations/{integration}/sessions",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(agent_network::renew)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/agent-network/messages",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(agent_network::messages).post(agent_network::send)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/agent-network/messages/{message}/receipts",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(agent_network::acknowledge)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/artifacts",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::create_artifact),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/assignment-context",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(planning::assignment_context)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/attempts",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::attempts)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/capsule-checks",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(capsules::check)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/capsule-context",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(capsules::context)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/capsule-policies",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(capsules::policies).post(capsules::register)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/capsules",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(capsules::list)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/capsules/{attempt}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(capsules::detail)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/channel-pool",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(handoff::read_pool).post(handoff::configure_pool)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/channel-pool/drain",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(handoff::drain_pool)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/channel-pool/end",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(handoff::finish_pool)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/contract-versions",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::contract_versions).post(catalog::put_contract_version),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/contracts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::contracts).post(catalog::put_contract),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/decisions",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(decisions::list).post(decisions::create),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/decisions/{decision}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(decisions::detail)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/decisions/{decision}/acknowledgments",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(decisions::acknowledge)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/decisions/{decision}/deferrals",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(decisions::defer)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/decisions/{decision}/resolutions",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(decisions::resolve)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/documents/{collection}",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::documents)\n                .post(catalog::put_document)\n                .layer(DefaultBodyLimit::max(128 * 1024 * 1024)),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/documents/{collection}/{document}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::document),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/event-cursor",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::event_cursor),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/events",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(events)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/evidence",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::evidence).post(catalog::record_evidence),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/execution-configuration",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_configuration::owner_context)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/execution-configuration/drafts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_configuration::owner_list)\n                .post(native_configuration::owner_save)\n                .layer(DefaultBodyLimit::max(8 * 1024 * 1024)),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/execution-configuration/validations",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(native_configuration::owner_validate)\n                .layer(DefaultBodyLimit::max(8 * 1024 * 1024)),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/findings",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::findings)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/flow-checks",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::check_flow_draft).layer(DefaultBodyLimit::max(32 * 1024 * 1024)),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/flow-generations",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(generation::generate),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/flow-revisions",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "// Large reviewed DAGs include immutable envelopes and compile context.\n            // Keep this increase local; other JSON routes retain Axum's default limit.\n            post(catalog::put_flow).layer(DefaultBodyLimit::max(32 * 1024 * 1024)),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/flows",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::flows)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/flows/latest",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::latest_flow),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/flows/{revision}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::project_flow),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/input-snapshots",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::input_snapshots),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/integration-queue",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::integration_queue),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/milestones",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::milestones).post(catalog::put_milestone),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/milestones/{milestone}/accept",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::accept_milestone),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/actions",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_panel::list).post(native_panel::request),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/blueprint-import-context",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_blueprints::context),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/blueprint-previews",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(native_blueprints::preview).layer(DefaultBodyLimit::max(128 * 1024 * 1024)),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/blueprint-reviews/{review}/import",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(native_blueprints::import),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/blueprint-source",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_blueprints::source),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/candidate-acceptances",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(operations::candidate_acceptances),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/candidate-review-sources/{source_attempt_id}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(operations::candidate_review_source),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/candidate-reviews",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(operations::candidate_review),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/configuration",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_configuration::context)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/configuration/drafts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_configuration::list).post(native_configuration::save)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/configuration/drafts/{draft}/activate",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(native_configuration::activate)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/configuration/drafts/{draft}/preview",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(native_configuration::preview)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/configuration/drafts/{draft}/publish",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(native_configuration::publish)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/observations",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_panel::observations),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/open",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_panel::open),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/retry-policy/{task}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_panel::retry_policy),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/native-panel/scheduling",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(native_panel::scheduling),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/operations",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(operations::list)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/owners",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::owner_territories).post(catalog::put_owner),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/phases",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(releases::phases)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/planning-inputs",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(planning::inputs)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/planning-overview",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(planning::overview)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/planning-scenarios",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(planning::scenario)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/queue-entries",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::queue_entries).post(catalog::enqueue),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/queue-entries/{task}",
+      "methods": [
+        "PATCH"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "axum::routing::patch(catalog::queue_priority),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(releases::list).post(releases::draft)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(releases::detail)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}/acceptances",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(releases::accept)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}/archives",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(releases::archive)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}/bundle",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(releases::bundle)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}/candidates",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(releases::candidate)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}/exports",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(releases::exports).post(releases::export)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}/manifest",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(releases::manifest)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/releases/{release}/reopenings",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(releases::reopen)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/requirements",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::requirements).post(catalog::create_requirement),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/requirements/{requirement}",
+      "methods": [
+        "PATCH"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "axum::routing::patch(catalog::update_requirement),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/resources",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::resources).post(catalog::put_policy),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/schedule",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::schedule).post(catalog::put_schedule),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/snapshot",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::snapshot)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/source-imports",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::import_source),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/sources",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::sources).post(catalog::put_source),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/sources/{source}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::get_source),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/task-estimates",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(planning::estimate)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/tasks",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(planning::task_list)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/tasks/{task}",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::task)"
+    },
+    {
+      "path": "/api/v1/projects/{project}/tasks/{task}/admission-checks",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::scoped_admission_checks),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/teams",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::teams).post(catalog::create_team),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/teams/{team}",
+      "methods": [
+        "PATCH"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "axum::routing::patch(catalog::update_team),"
+    },
+    {
+      "path": "/api/v1/projects/{project}/tutorial/personal-site",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(tutorial::create_plan)"
+    },
+    {
+      "path": "/api/v1/queue-entries",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::enqueue_global)"
+    },
+    {
+      "path": "/api/v1/recovery-items",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(maintenance::recovery_items)"
+    },
+    {
+      "path": "/api/v1/registrations",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workspaces::register)"
+    },
+    {
+      "path": "/api/v1/resource-policies",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::put_global_policy)"
+    },
+    {
+      "path": "/api/v1/resource-usage",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::resource_usage)"
+    },
+    {
+      "path": "/api/v1/resources",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(catalog::all_resources).post(catalog::put_global_policy),"
+    },
+    {
+      "path": "/api/v1/session",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "auth.json",
+      "handlers": "post(login)"
+    },
+    {
+      "path": "/api/v1/system/info",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(system_info)"
+    },
+    {
+      "path": "/api/v1/system/routes",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(route_inventory)"
+    },
+    {
+      "path": "/api/v1/tasks/{task}/admission-checks",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::admission_checks),"
+    },
+    {
+      "path": "/api/v1/tasks/{task}/retry",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(catalog::retry)"
+    },
+    {
+      "path": "/api/v1/tutorials/personal-site",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(tutorial::guide)"
+    },
+    {
+      "path": "/api/v1/workers/register",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workers::register)"
+    },
+    {
+      "path": "/api/v1/workers/{worker}/claim",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workers::claim)"
+    },
+    {
+      "path": "/api/v1/workers/{worker}/dispatch-events",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(worker_dispatch::events)"
+    },
+    {
+      "path": "/api/v1/workers/{worker}/heartbeat",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workers::heartbeat)"
+    },
+    {
+      "path": "/api/v1/workspaces",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workspaces::list).post(workspaces::create)"
+    },
+    {
+      "path": "/api/v1/workspaces/{workspace}/invitations",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workspaces::invitations).post(workspaces::invite)"
+    },
+    {
+      "path": "/api/v1/workspaces/{workspace}/invitations/{invitation}/revoke",
+      "methods": [
+        "POST"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "post(workspaces::revoke)"
+    },
+    {
+      "path": "/api/v1/workspaces/{workspace}/members",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(workspaces::members)"
+    },
+    {
+      "path": "/api/v1/workspaces/{workspace}/members/{member}",
+      "methods": [
+        "PATCH"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "axum::routing::patch(workspaces::change_member)"
+    },
+    {
+      "path": "/healthz",
+      "methods": [
+        "GET"
+      ],
+      "owner": "A09",
+      "priority": "P0",
+      "source": "postgresql",
+      "handlers": "get(health)"
+    }
+  ]
+}

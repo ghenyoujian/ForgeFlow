@@ -1,0 +1,39 @@
+# Applied after the frozen ForgeFlow role declarations in the native Web profile.
+# The startup factory replaces the three placeholders with exact immutable paths.
+- id: session-persistence-jsonl
+  disabled: true
+- id: config-editor
+  disabled: true
+- id: ui-plugin-manager
+  config:
+    registryProbeEnabled: false
+    registryProbeTimeoutMs: 1500
+    registryProbeCacheTtlMs: 300000
+- insert:
+    - id: forgeflow-native-ui-readonly-persistence
+      name: FORGEFLOW_UI_OBSERVER_MODULE
+      config:
+        schema_version: forgeflow.native-ui-observer.v1
+        kind: read-only-persistence
+        module_anchor: FORGEFLOW_UI_MODULE_ANCHOR
+        root: FORGEFLOW_UI_SNAPSHOT_ROOT
+        compression: zstd
+    - id: forgeflow-native-ui-readonly-config-editor
+      name: FORGEFLOW_UI_OBSERVER_MODULE
+      config:
+        schema_version: forgeflow.native-ui-observer.v1
+        kind: read-only-config-editor
+        module_anchor: FORGEFLOW_UI_MODULE_ANCHOR
+        ui_preferences_path: FORGEFLOW_UI_PREFERENCES_PATH
+    - id: forgeflow-native-ui-guards
+      name: FORGEFLOW_UI_OBSERVER_MODULE
+      config:
+        schema_version: forgeflow.native-ui-observer.v1
+        kind: guards
+    - id: ui-agent-team
+      name: '@deepseek-ai/dsh-experimental-client-ui-agent-team'
+    - id: forgeflow-native-operation-panel
+      name: '@forgeflow/dsh-native-operation-panel'
+      config:
+        schema_version: forgeflow.native-ui-panel.v1
+        private_config_path: FORGEFLOW_UI_PRIVATE_CONFIG

@@ -1,0 +1,423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgeflow.invalid/contracts/ecp/source_manifest.v2.schema.json",
+  "title": "ForgeFlow ECP source snapshot manifest v2",
+  "description": "Strict versioned source inventory including completeness and Git index visibility; independent source verification remains required.",
+  "x-status": "DRAFT_PENDING_PRODUCER_MIGRATION",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_root",
+    "head",
+    "worktree_state",
+    "exclude_patterns",
+    "untracked_scan_mode",
+    "untracked_scan_roots",
+    "tracked_changes",
+    "untracked_business_files",
+    "excluded_generated_files",
+    "patch_sha256",
+    "manifest_sha256",
+    "created_at",
+    "release_qualifiable",
+    "inventory_complete",
+    "inventory_error",
+    "index_visibility_exceptions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "forgeflow.ecp-source-manifest.v2"
+    },
+    "source_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "head": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$",
+      "not": {
+        "pattern": "[^a-f0-9]"
+      }
+    },
+    "worktree_state": {
+      "enum": [
+        "CLEAN",
+        "DIRTY_UNFROZEN"
+      ]
+    },
+    "exclude_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "untracked_scan_mode": {
+      "enum": [
+        "bounded",
+        "all"
+      ]
+    },
+    "untracked_scan_roots": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tracked_changes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source_entry"
+      }
+    },
+    "untracked_business_files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source_entry"
+      }
+    },
+    "excluded_generated_files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/excluded_entry"
+      }
+    },
+    "patch_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "manifest_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "release_qualifiable": {
+      "type": "boolean"
+    },
+    "inventory_complete": {
+      "type": "boolean"
+    },
+    "inventory_error": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "index_visibility_exceptions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "assume_unchanged",
+              "skip_worktree"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "assume_unchanged": {
+                "type": "boolean"
+              },
+              "skip_worktree": {
+                "type": "boolean"
+              }
+            },
+            "anyOf": [
+              {
+                "properties": {
+                  "assume_unchanged": {
+                    "const": true
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "skip_worktree": {
+                    "const": true
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "gitlink"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gitlink": {
+                "const": true
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[a-f0-9]{64}$",
+      "not": {
+        "pattern": "[^a-f0-9]"
+      }
+    },
+    "mode": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 4,
+      "pattern": "^[0-7]{4}$",
+      "not": {
+        "pattern": "[^0-7]"
+      }
+    },
+    "source_entry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "deleted"
+            },
+            "mode": {
+              "type": "null"
+            },
+            "sha256": {
+              "type": "null"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "file"
+            },
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "target",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "symlink"
+            },
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "directory_summary"
+            },
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "sha256": {
+              "type": "null"
+            }
+          }
+        }
+      ]
+    },
+    "excluded_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "inventory_complete": {
+            "const": true
+          }
+        },
+        "required": [
+          "inventory_complete"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inventory_error": {
+            "type": "null"
+          },
+          "index_visibility_exceptions": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "inventory_error": {
+            "type": "string",
+            "minLength": 1
+          },
+          "worktree_state": {
+            "const": "DIRTY_UNFROZEN"
+          },
+          "release_qualifiable": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "worktree_state": {
+            "const": "CLEAN"
+          }
+        },
+        "required": [
+          "worktree_state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inventory_complete": {
+            "const": true
+          },
+          "release_qualifiable": {
+            "const": true
+          },
+          "tracked_changes": {
+            "maxItems": 0
+          },
+          "untracked_business_files": {
+            "maxItems": 0
+          },
+          "excluded_generated_files": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "release_qualifiable": {
+            "const": false
+          }
+        }
+      }
+    }
+  ]
+}

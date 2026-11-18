@@ -1,0 +1,705 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgeflow.invalid/contracts/ecp/source_manifest.v3.schema.json",
+  "title": "ForgeFlow ECP source snapshot manifest v3 — directory projection draft",
+  "description": "Draft structural contract for a versioned projected source inventory. This schema does not perform filesystem inspection, authorize exclusions, authenticate evidence or qualify releases.",
+  "x-status": "DRAFT_NOT_QUALIFIABLE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_root",
+    "head",
+    "worktree_state",
+    "exclude_patterns",
+    "untracked_scan_mode",
+    "untracked_scan_roots",
+    "tracked_changes",
+    "untracked_business_files",
+    "excluded_generated_files",
+    "patch_sha256",
+    "manifest_sha256",
+    "created_at",
+    "release_qualifiable",
+    "inventory_complete",
+    "inventory_error",
+    "index_visibility_exceptions",
+    "directory_projection",
+    "projection_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "forgeflow.ecp-source-manifest.v3"
+    },
+    "source_root": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^/",
+      "maxLength": 4096,
+      "not": {
+        "pattern": "[\\x00-\\x1f\\x7f\\\\]"
+      }
+    },
+    "head": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$",
+      "not": {
+        "pattern": "[^a-f0-9]"
+      }
+    },
+    "worktree_state": {
+      "enum": [
+        "CLEAN",
+        "DIRTY_UNFROZEN"
+      ]
+    },
+    "exclude_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      },
+      "maxItems": 4096
+    },
+    "untracked_scan_mode": {
+      "enum": [
+        "bounded",
+        "all"
+      ]
+    },
+    "untracked_scan_roots": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      },
+      "maxItems": 4096
+    },
+    "tracked_changes": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/source_entry"
+          },
+          {
+            "properties": {
+              "status": {
+                "not": {
+                  "const": "??"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 100000
+    },
+    "untracked_business_files": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/source_entry"
+          },
+          {
+            "properties": {
+              "status": {
+                "const": "??"
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 100000
+    },
+    "excluded_generated_files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/excluded_entry"
+      },
+      "maxItems": 100000
+    },
+    "patch_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "manifest_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "not": {
+        "pattern": "[^0-9TZ:-]"
+      }
+    },
+    "release_qualifiable": {
+      "const": false
+    },
+    "inventory_complete": {
+      "type": "boolean"
+    },
+    "inventory_error": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "index_visibility_exceptions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "assume_unchanged",
+              "skip_worktree"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "assume_unchanged": {
+                "type": "boolean"
+              },
+              "skip_worktree": {
+                "type": "boolean"
+              }
+            },
+            "anyOf": [
+              {
+                "properties": {
+                  "assume_unchanged": {
+                    "const": true
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "skip_worktree": {
+                    "const": true
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "gitlink"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gitlink": {
+                "const": true
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 100000
+    },
+    "projection_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "directory_projection": {
+      "$ref": "#/$defs/directory_projection"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[a-f0-9]{64}$",
+      "not": {
+        "pattern": "[^a-f0-9]"
+      }
+    },
+    "mode": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 4,
+      "pattern": "^[0-7]{4}$",
+      "not": {
+        "pattern": "[^0-7]"
+      }
+    },
+    "source_entry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relative_path"
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "deleted"
+            },
+            "mode": {
+              "type": "null"
+            },
+            "sha256": {
+              "type": "null"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relative_path"
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "file"
+            },
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "target",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relative_path"
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "symlink"
+            },
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "status",
+            "kind",
+            "mode",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relative_path"
+            },
+            "status": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "kind": {
+              "const": "directory_summary"
+            },
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "sha256": {
+              "type": "null"
+            }
+          }
+        }
+      ]
+    },
+    "excluded_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "status": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))[^/]+(?:/[^/]+)*$",
+      "not": {
+        "pattern": "[\\x00-\\x1f\\x7f\\\\]"
+      }
+    },
+    "dir_path": {
+      "oneOf": [
+        {
+          "const": "."
+        },
+        {
+          "$ref": "#/$defs/relative_path"
+        }
+      ]
+    },
+    "directory_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "kind",
+        "mode",
+        "origin"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/dir_path"
+        },
+        "kind": {
+          "const": "directory"
+        },
+        "mode": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/mode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "source_root",
+            "git_ancestor",
+            "excluded_container",
+            "untracked_business"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "path": {
+                "const": "."
+              }
+            },
+            "required": [
+              "path"
+            ]
+          },
+          "then": {
+            "properties": {
+              "origin": {
+                "const": "source_root"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "origin": {
+                "not": {
+                  "const": "source_root"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "excluded_directory_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "kind",
+        "excluded_by"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "kind": {
+          "const": "directory"
+        },
+        "excluded_by": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "directory_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "mode_availability",
+        "exclusion_policy_sha256",
+        "directories",
+        "excluded_directory_boundaries"
+      ],
+      "properties": {
+        "version": {
+          "const": "forgeflow.ecp-directory-projection.v1"
+        },
+        "mode_availability": {
+          "enum": [
+            "VERIFIED",
+            "UNAVAILABLE"
+          ]
+        },
+        "exclusion_policy_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "directories": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/directory_record"
+          },
+          "contains": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "const": "."
+              },
+              "origin": {
+                "const": "source_root"
+              }
+            },
+            "required": [
+              "path",
+              "origin"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        "excluded_directory_boundaries": {
+          "type": "array",
+          "maxItems": 100000,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/excluded_directory_boundary"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode_availability": {
+                "const": "VERIFIED"
+              }
+            },
+            "required": [
+              "mode_availability"
+            ]
+          },
+          "then": {
+            "properties": {
+              "directories": {
+                "items": {
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "directories": {
+                "items": {
+                  "properties": {
+                    "mode": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "inventory_complete": {
+            "const": true
+          }
+        },
+        "required": [
+          "inventory_complete"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inventory_error": {
+            "type": "null"
+          },
+          "index_visibility_exceptions": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "inventory_error": {
+            "type": "string",
+            "minLength": 1
+          },
+          "worktree_state": {
+            "const": "DIRTY_UNFROZEN"
+          },
+          "release_qualifiable": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "worktree_state": {
+            "const": "CLEAN"
+          }
+        },
+        "required": [
+          "worktree_state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inventory_complete": {
+            "const": true
+          },
+          "release_qualifiable": {
+            "const": false
+          },
+          "tracked_changes": {
+            "maxItems": 0
+          },
+          "untracked_business_files": {
+            "maxItems": 0
+          },
+          "excluded_generated_files": {
+            "maxItems": 0
+          },
+          "directory_projection": {
+            "properties": {
+              "directories": {
+                "items": {
+                  "properties": {
+                    "origin": {
+                      "not": {
+                        "const": "untracked_business"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "release_qualifiable": {
+            "const": false
+          }
+        }
+      }
+    }
+  ],
+  "x-forgeflow-semantic-contract": {
+    "projection": "Project the fixed registered exclusion policy without traversing excluded subtrees. Every observable non-excluded directory, including the source root as ., must appear exactly once. Excluded paths are deliberately outside the projected equivalence claim.",
+    "ordering": "Sort each directory and excluded-directory-boundary array by the UTF-8 bytes of path strictly ascending. Paths are unique by path even where records differ. Strings must be valid Unicode scalar values. JSON Schema uniqueItems alone cannot enforce these properties.",
+    "origins": "source_root is present exactly once at .; git_ancestor means a proper ancestor of an included Git object; excluded_container means a non-Git ancestor whose complete non-excluded descendants are themselves exclusion-only containers and which has at least one observed excluded real-directory boundary. Other non-excluded directories are untracked_business. Independently verify origins; directory names do not determine trust.",
+    "boundary": "Each boundary is an observed real directory encountered at a registered exclusion pattern; never follow a boundary symlink. Each excluded_container is a strict ancestor of at least one such boundary. No excluded boundary is itself in the projection. Extra untracked files, empty directories, unreadable paths, symlinks or scan failures cannot be treated as excluded containers.",
+    "policy": "exclusion_policy_sha256 is SHA-256 of the UTF-8 canonical JSON bytes of exclude_patterns; the consumer independently checks that the entire ordered list is registered. A digest of an unregistered policy does not authorize it.",
+    "projection_digest": "projection_sha256 is SHA-256 of the UTF-8 canonical JSON bytes of directory_projection. Canonical JSON uses sorted object keys, no insignificant whitespace, ensure_ascii=false, rejects non-finite values and malformed Unicode; arrays retain their required order.",
+    "manifest_digest": "manifest_sha256 is SHA-256 of canonical UTF-8 JSON of the complete manifest except manifest_sha256, created_at and release_qualifiable, including both directory_projection and projection_sha256.",
+    "mode": "mode is four octal permission digits including special bits when mode_availability is VERIFIED, and null everywhere when UNAVAILABLE. Consumers must independently verify platform reliability; arbitrary stat values on an unreliable filesystem are not VERIFIED.",
+    "claims": "A draft v3 record has release_qualifiable=false, including CLEAN records. Schema validity and projected path/mode matching are not authentication, isolation, atomicity, build provenance, release approval or equivalence of uid/gid/ACL/xattr/timestamps/mount behavior.",
+    "acceptance": "A future independently reviewed version or approved contract revision must define qualifications and all producer/consumer changes before any release claim. Historical v1/v2 documents are not rewritten or promoted.",
+    "bounded_input": "Reject UTF-8 documents larger than 16777216 bytes before parsing, malformed/duplicate JSON keys, excessive nesting, non-finite numbers, and invalid Unicode. Independent consumers must enforce these limits; JSON Schema alone does not.",
+    "timestamp": "created_at uses UTC Z with second precision; consumers must verify that the calendar date and time exist. JSON Schema format is an annotation unless a format checker is explicitly enabled.",
+    "entry_paths": "Every file, deleted entry and excluded entry uses a normalized relative path; tracked and untracked path sets are disjoint and unique. Symlink targets require independent no-escape verification against the source root and the exclusion projection."
+  }
+}

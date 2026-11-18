@@ -1,0 +1,104 @@
+.native-configuration-editor { min-width: 0; }
+.native-configuration-editor fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.native-configuration-editor input:not([type="checkbox"]), .native-configuration-editor textarea, .native-configuration-editor select { width: 100%; min-width: 0; max-width: 100%; }
+.native-configuration-editor textarea { resize: vertical; font: inherit; font-size: 12px; line-height: 1.7; }
+.native-configuration-editor code { overflow-wrap: anywhere; white-space: normal; font-size: 10px; }
+.native-configuration-editor button { font-size: 11px; }
+.configuration-intro { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.configuration-intro p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.configuration-pill { display: inline-flex; align-items: center; flex-shrink: 0; padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 10px; white-space: nowrap; }
+.configuration-baselines { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 18px 20px 8px; }
+.configuration-baselines > div { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel3); }
+.configuration-baselines span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 10px; }
+.configuration-baselines strong { font-size: 12px; font-weight: 550; }
+.configuration-baselines code { display: block; line-height: 1.7; }
+.configuration-baselines small { display: block; margin-top: 8px; font-size: 10px; color: var(--muted); }
+.configuration-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 20px 18px; }
+.configuration-notice, .configuration-validation, .configuration-errors { margin: 0 20px 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel3); font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+.configuration-errors ul { margin: 8px 0 0; padding-left: 18px; }
+.configuration-errors strong { font-size: 12px; font-weight: 550; }
+.configuration-tabs { display: flex; overflow-x: auto; overscroll-behavior-x: contain; gap: 4px; padding: 0 20px 10px; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
+.configuration-tabs > button { flex-shrink: 0; border-color: transparent; background: transparent; white-space: nowrap; color: var(--muted); }
+.configuration-tabs > button[aria-selected="true"] { border-color: var(--line); background: var(--panel2); color: var(--text); }
+.configuration-search { display: flex; align-items: center; gap: 9px; padding: 16px 20px; }
+.configuration-search > svg { flex-shrink: 0; color: var(--muted); }
+.configuration-search > input { flex: 1; }
+.configuration-search > span { flex-shrink: 0; color: var(--muted); font-size: 10px; }
+.configuration-note { margin: 0; padding: 16px 20px; color: var(--muted); font-size: 11px; line-height: 1.8; }
+.configuration-preset-workspace { display: grid; grid-template-columns: minmax(210px, .75fr) minmax(0, 2fr); min-width: 0; border-top: 1px solid var(--line); }
+.configuration-picker { min-width: 0; padding: 14px; border-right: 1px solid var(--line); }
+.configuration-picker > button { display: block; width: 100%; min-width: 0; margin-bottom: 6px; padding: 10px 12px; text-align: left; background: transparent; border-color: transparent; }
+.configuration-picker > button[aria-pressed="true"] { background: var(--panel2); border-color: var(--line); }
+.configuration-picker strong { display: block; font-size: 12px; font-weight: 500; line-height: 1.6; overflow-wrap: anywhere; }
+.configuration-picker code { display: block; margin-top: 5px; color: var(--muted); }
+.configuration-preset-form { min-width: 0; padding: 20px; }
+.configuration-preset-form > header { margin-bottom: 18px; }
+.configuration-preset-form h3 { margin: 0 0 8px; font-size: 15px; font-weight: 550; overflow-wrap: anywhere; }
+.configuration-preset-form > header code { color: var(--muted); }
+.configuration-clone { margin: 18px 0; }
+.configuration-clone > p { font-size: 11px; line-height: 1.8; overflow-wrap: anywhere; }
+.configuration-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px; font-size: 10px; color: var(--muted); }
+.configuration-pagination > span { margin-right: auto; }
+.configuration-pagination > button { padding: 4px 7px; min-height: 28px; font-size: 10px; }
+.configuration-plugins { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 0 20px 20px; }
+.configuration-plugins > .configuration-note, .configuration-plugins > .configuration-pagination { grid-column: 1 / -1; padding-left: 0; padding-right: 0; }
+.configuration-plugin { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel3); }
+.configuration-plugin > header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 9px; padding-bottom: 12px; }
+.configuration-plugin > header > label { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.configuration-plugin input[type="checkbox"] { flex-shrink: 0; min-height: 0; width: 15px; height: 15px; padding: 0; margin: 0; }
+.configuration-plugin .field { min-width: 0; margin-top: 10px; overflow-wrap: anywhere; }
+.configuration-plugin .field > span { overflow-wrap: anywhere; font-size: 10px; }
+.configuration-plugin > .configuration-note { padding: 0; }
+.configuration-roles, .configuration-changes, .configuration-versions { padding: 0 20px 20px; min-width: 0; }
+.configuration-roles > .configuration-note, .configuration-changes > .configuration-note { padding: 14px 0; }
+.configuration-role { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.configuration-role > div { min-width: 0; }
+.configuration-role strong { display: block; margin: 5px 0; font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
+.configuration-role small { display: block; color: var(--muted); font-size: 10px; overflow-wrap: anywhere; }
+.configuration-role > button { flex-shrink: 0; }
+.configuration-role-picker { margin-top: 18px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel3); }
+.configuration-role-picker > header, .configuration-versions > header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 14px 0; }
+.configuration-role-picker h3, .configuration-versions h3, .configuration-changes h3 { margin: 0; font-size: 13px; font-weight: 550; overflow-wrap: anywhere; }
+.configuration-role-picker > button { display: block; width: 100%; margin: 6px 0; padding: 10px; text-align: left; }
+.configuration-role-picker > button strong, .configuration-role-picker > button code, .configuration-role-picker > button small { display: block; line-height: 1.7; overflow-wrap: anywhere; }
+.configuration-role-picker > button small { color: var(--muted); font-size: 10px; }
+.configuration-changes h3 { margin-top: 18px; }
+.configuration-changes > ul { list-style: none; padding: 0; margin: 0; }
+.configuration-changes li { display: grid; gap: 6px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.configuration-changes li > strong { font-size: 11px; font-weight: 550; }
+.configuration-changes li > code { color: var(--muted); }
+.configuration-versions > article { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.configuration-versions > article > div { min-width: 0; }
+.configuration-versions article strong, .configuration-versions article code, .configuration-versions article small { display: block; margin-top: 7px; line-height: 1.6; overflow-wrap: anywhere; }
+.configuration-versions article strong { font-size: 12px; font-weight: 500; }
+.configuration-versions article small { color: var(--muted); font-size: 10px; }
+.configuration-version-actions { display: flex; flex-wrap: wrap; gap: 7px; flex-shrink: 0; }
+.configuration-runtime-note { margin: 0 20px 18px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel3); }
+.configuration-runtime-note strong { font-size: 12px; font-weight: 550; }
+.configuration-runtime-note p { margin: 7px 0 0; font-size: 11px; color: var(--muted); line-height: 1.8; }
+.configuration-diagnostics { margin: 0 20px; padding-bottom: 16px; }
+.configuration-diagnostics dl { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 9px; font-size: 11px; }
+.configuration-diagnostics dt { color: var(--muted); }
+.configuration-diagnostics dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 1000px) {
+  .configuration-baselines { grid-template-columns: minmax(0, 1fr); }
+  .configuration-preset-workspace { grid-template-columns: minmax(180px, .75fr) minmax(0, 1.6fr); }
+  .configuration-version-actions { flex-direction: column; }
+}
+@media (max-width: 640px) {
+  .configuration-intro { flex-wrap: wrap; padding: 14px; }
+  .configuration-baselines, .configuration-actions { padding-left: 14px; padding-right: 14px; }
+  .configuration-tabs { padding-left: 14px; padding-right: 14px; }
+  .configuration-search { padding: 14px; gap: 6px; }
+  .configuration-search > span { display: none; }
+  .configuration-preset-workspace { grid-template-columns: minmax(0, 1fr); }
+  .configuration-picker { border-right: 0; border-bottom: 1px solid var(--line); max-height: 350px; overflow-y: auto; }
+  .configuration-preset-form { padding: 16px 14px; }
+  .configuration-plugins { grid-template-columns: minmax(0, 1fr); padding-left: 14px; padding-right: 14px; }
+  .configuration-roles, .configuration-changes, .configuration-versions { padding-left: 14px; padding-right: 14px; }
+  .configuration-versions > article { flex-direction: column; gap: 10px; }
+  .configuration-version-actions { flex-direction: row; }
+  .configuration-runtime-note, .configuration-notice, .configuration-validation, .configuration-errors, .configuration-diagnostics { margin-left: 14px; margin-right: 14px; }
+  .configuration-diagnostics dl { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .configuration-diagnostics dd { margin-bottom: 7px; }
+}

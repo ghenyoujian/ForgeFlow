@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "x-status": "DESIGN_DRAFT_NOT_IMPLEMENTATION",
+  "title": "ForgeFlow ECP release manifest v1",
+  "required": [
+    "schema_version",
+    "product_gate_effect",
+    "qualification",
+    "status",
+    "candidate_id",
+    "source_sha",
+    "source_manifest_sha256",
+    "binary_manifest_sha256",
+    "schema_manifest_sha256",
+    "profile_manifest_sha256",
+    "evidence_manifest_sha256",
+    "gate_snapshot",
+    "worktree_dirty_entries",
+    "binary_files",
+    "schema_manifest",
+    "profile_manifest",
+    "evidence_manifest",
+    "checks",
+    "created_at",
+    "release_approval"
+  ],
+  "properties": {
+    "schema_version": {"const": "forgeflow.ecp-release-manifest.v1"},
+    "product_gate_effect": {"const": "NONE"},
+    "qualification": {"const": "NOT_RUN"},
+    "status": {"enum": ["CANDIDATE", "REJECTED", "INCONCLUSIVE", "BLOCKED"]},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "source_sha": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40}$"},
+    "source_manifest_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "binary_manifest_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "schema_manifest_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "profile_manifest_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "evidence_manifest_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "gate_snapshot": {"type": ["object", "null"]},
+    "worktree_dirty_entries": {"type": "integer", "minimum": 0},
+    "binary_files": {"type": "array", "items": {"$ref": "#/$defs/binary"}},
+    "schema_manifest": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "profile_manifest": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "evidence_manifest": {"type": "array", "items": {"$ref": "#/$defs/entry"}},
+    "checks": {"type": "array", "items": {"type": "object", "required": ["name", "status"], "properties": {"name": {"type": "string"}, "status": {"enum": ["PASS", "BLOCKED", "REJECTED", "INCONCLUSIVE"]}}, "additionalProperties": true}},
+    "created_at": {"type": "string", "format": "date-time"},
+    "release_approval": {"const": false}
+  },
+  "$defs": {
+    "binary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "mode", "sha256"],
+      "properties": {"name": {"type": "string", "minLength": 1}, "mode": {"type": "string", "pattern": "^[0-7]{4}$"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind", "mode"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["file", "symlink"]},
+        "mode": {"type": "string", "pattern": "^[0-7]{4}$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "target": {"type": "string"}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "file"}}}, "then": {"required": ["sha256"], "not": {"required": ["target"]}}},
+        {"if": {"properties": {"kind": {"const": "symlink"}}}, "then": {"required": ["target"], "not": {"required": ["sha256"]}}}
+      ]
+    }
+  }
+}

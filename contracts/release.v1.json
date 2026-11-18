@@ -1,0 +1,1104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:forgeflow:release:v1",
+  "title": "ForgeFlow scoped Release/phase authority v1",
+  "description": "Owner-only catalog idempotent DRAFT -> CANDIDATE -> ACCEPTED. Candidate reuses existing accepted milestone validation and actual canonical Git ancestry, freezing current main/tree, requirements, independent evidence/log/file hashes, declared installation and risks/not-proven scope. Owner acceptance never promotes global product Gates. Export completion requires actual registered bundle and manifest bytes, then archive requires all project custody and verifier/model/integration effects settled. Reopen appends a fresh phase, retains immutable release/history and pauses execution pending new-stage review. Generic authority writes are forbidden.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Release"
+    },
+    {
+      "$ref": "#/$defs/ReleaseCommand"
+    },
+    {
+      "$ref": "#/$defs/ReleaseManifest"
+    },
+    {
+      "$ref": "#/$defs/ReleaseOutcome"
+    },
+    {
+      "$ref": "#/$defs/ReleaseExportReceipt"
+    },
+    {
+      "$ref": "#/$defs/ProjectPhase"
+    }
+  ],
+  "$defs": {
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "ReleaseMilestoneBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "milestone_id",
+        "milestone_revision",
+        "baseline_version"
+      ],
+      "properties": {
+        "milestone_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "milestone_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "baseline_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        }
+      }
+    },
+    "ReleaseFileIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256",
+        "bytes"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "ReleaseManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "release_id",
+        "project_id",
+        "phase_id",
+        "title",
+        "scope",
+        "main_sha",
+        "main_tree_oid",
+        "milestone_acceptances",
+        "files",
+        "installation",
+        "not_proven",
+        "risk_dispositions",
+        "production_gate_claim",
+        "export_scope"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "forgeflow.release-manifest.v1"
+        },
+        "release_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "scope": {
+          "const": "OWNER_DECLARED_MILESTONE_SCOPE"
+        },
+        "main_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"
+        },
+        "main_tree_oid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"
+        },
+        "milestone_acceptances": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "type": "object"
+          }
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/ReleaseFileIdentity"
+          }
+        },
+        "installation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "not_proven": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "risk_dispositions": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "production_gate_claim": {
+          "const": "NO_GLOBAL_PRODUCTION_GATE_PROMOTION"
+        },
+        "export_scope": {
+          "const": "MANIFEST_SOURCE_AND_BOUND_ARTIFACTS_BUNDLE"
+        }
+      }
+    },
+    "Release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "release_id",
+        "project_id",
+        "phase_id",
+        "state",
+        "revision",
+        "title",
+        "milestone_refs",
+        "installation",
+        "not_proven",
+        "risk_dispositions",
+        "created_by",
+        "created_at",
+        "updated_at",
+        "candidate_by",
+        "candidate_at",
+        "accepted_by",
+        "accepted_at",
+        "acceptance_note",
+        "manifest",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "forgeflow.release.v1"
+        },
+        "release_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "DRAFT",
+            "CANDIDATE",
+            "ACCEPTED"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "milestone_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/ReleaseMilestoneBinding"
+          }
+        },
+        "installation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "not_proven": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "risk_dispositions": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "created_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "candidate_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "accepted_by": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "accepted_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "acceptance_note": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "manifest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReleaseManifest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "manifest_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "ProjectPhase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "phase_id",
+        "project_id",
+        "ordinal",
+        "previous_release_id",
+        "title",
+        "goal",
+        "baseline_main_sha",
+        "created_by",
+        "created_at",
+        "revision"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "forgeflow.project-phase.v1"
+        },
+        "phase_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "previous_release_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "goal": {
+          "type": "string"
+        },
+        "baseline_main_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"
+        },
+        "created_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        }
+      }
+    },
+    "ReleaseExportReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "export_id",
+        "project_id",
+        "release_id",
+        "manifest_sha256",
+        "artifact",
+        "bytes",
+        "bundle",
+        "bundle_bytes",
+        "source_archive_sha256",
+        "exported_by",
+        "exported_at",
+        "revision"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "forgeflow.release-export.v1"
+        },
+        "export_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "release_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "artifact": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bundle": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "bundle_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_archive_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "exported_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exported_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revision": {
+          "const": 1
+        }
+      }
+    },
+    "ReleaseCommand": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "payload"
+          ],
+          "properties": {
+            "kind": {
+              "const": "CREATE_DRAFT"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "project_id",
+                "expected_project_revision",
+                "title",
+                "milestone_refs",
+                "installation",
+                "not_proven",
+                "risk_dispositions"
+              ],
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expected_project_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "milestone_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 128,
+                  "items": {
+                    "$ref": "#/$defs/ReleaseMilestoneBinding"
+                  }
+                },
+                "installation": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "not_proven": {
+                  "type": "array",
+                  "maxItems": 128,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  }
+                },
+                "risk_dispositions": {
+                  "type": "array",
+                  "maxItems": 128,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "payload"
+          ],
+          "properties": {
+            "kind": {
+              "const": "CREATE_CANDIDATE"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "project_id",
+                "release_id",
+                "expected_revision",
+                "expected_main_sha"
+              ],
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "release_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expected_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "expected_main_sha": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "payload"
+          ],
+          "properties": {
+            "kind": {
+              "const": "ACCEPT"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "project_id",
+                "release_id",
+                "expected_revision",
+                "expected_manifest_sha256",
+                "note"
+              ],
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "release_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expected_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "expected_manifest_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "payload"
+          ],
+          "properties": {
+            "kind": {
+              "const": "RECORD_EXPORT"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "project_id",
+                "release_id",
+                "expected_revision",
+                "artifact_id",
+                "bundle_artifact_id"
+              ],
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "release_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expected_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "bundle_artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "payload"
+          ],
+          "properties": {
+            "kind": {
+              "const": "ARCHIVE"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "project_id",
+                "release_id",
+                "expected_revision",
+                "expected_project_revision",
+                "reason"
+              ],
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "release_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expected_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "expected_project_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "payload"
+          ],
+          "properties": {
+            "kind": {
+              "const": "REOPEN"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "project_id",
+                "release_id",
+                "expected_revision",
+                "expected_project_revision",
+                "title",
+                "goal",
+                "reason"
+              ],
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "release_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expected_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "expected_project_revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9223372036854775807
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "goal": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ReleaseOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release",
+        "project",
+        "phase",
+        "export",
+        "accepted"
+      ],
+      "properties": {
+        "release": {
+          "$ref": "#/$defs/Release"
+        },
+        "project": {
+          "type": "object"
+        },
+        "phase": {
+          "$ref": "#/$defs/ProjectPhase"
+        },
+        "export": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReleaseExportReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "accepted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CREATE_DRAFTHttpBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_project_revision",
+        "title",
+        "milestone_refs",
+        "installation",
+        "not_proven",
+        "risk_dispositions"
+      ],
+      "properties": {
+        "expected_project_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "milestone_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/ReleaseMilestoneBinding"
+          }
+        },
+        "installation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "not_proven": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "risk_dispositions": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      }
+    },
+    "CREATE_CANDIDATEHttpBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "expected_main_sha"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "expected_main_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"
+        }
+      }
+    },
+    "ACCEPTHttpBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "expected_manifest_sha256",
+        "note"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "expected_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "RECORD_EXPORTHttpBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        }
+      }
+    },
+    "ARCHIVEHttpBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "expected_project_revision",
+        "reason"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "expected_project_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "REOPENHttpBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "expected_project_revision",
+        "title",
+        "goal",
+        "reason"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "expected_project_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    }
+  },
+  "x-http": {
+    "list": "GET /api/v1/projects/{project}/releases",
+    "draft": "POST /api/v1/projects/{project}/releases",
+    "get": "GET /api/v1/projects/{project}/releases/{release}",
+    "candidate": "POST /api/v1/projects/{project}/releases/{release}/candidates",
+    "accept": "POST /api/v1/projects/{project}/releases/{release}/acceptances",
+    "export": "POST /api/v1/projects/{project}/releases/{release}/exports",
+    "archive": "POST /api/v1/projects/{project}/releases/{release}/archives",
+    "reopen": "POST /api/v1/projects/{project}/releases/{release}/reopenings",
+    "manifest": "GET /api/v1/projects/{project}/releases/{release}/manifest",
+    "bundle": "GET /api/v1/projects/{project}/releases/{release}/bundle",
+    "phases": "GET /api/v1/projects/{project}/phases",
+    "write_header": "Idempotency-Key",
+    "response": "CommandResult {operation_id,replayed,value:ReleaseOutcome}"
+  },
+  "x-bundle": {
+    "members": [
+      "manifest.json",
+      "INSTALLATION.txt",
+      "source.tar",
+      "artifacts/{each frozen artifact_id}"
+    ],
+    "optional_directory_member": "artifacts/",
+    "duplicates_and_extra_members": "FORBIDDEN",
+    "manifest_encoding": "serde_json compact UTF8 ReleaseManifest exact bytes; no trailing newline",
+    "installation_encoding": "Manifest.installation UTF8 exact bytes; no trailing newline",
+    "source": "git archive --format=tar exact frozen main_sha; Store independently regenerates and verifies bytes digest",
+    "artifact_kinds": {
+      "manifest": "RELEASE_MANIFEST",
+      "bundle": "RELEASE_BUNDLE"
+    },
+    "limits": {
+      "manifest_and_each_bound_artifact_bytes": 33554432,
+      "bundle_and_source_archive_bytes": 268435456
+    },
+    "completion": "Server verifies registered actual file digests/sizes, exact tar members/content, independent Git source and original bound artifact hashes. Download is not acceptance.",
+    "scope": "Source/evidence bundle correctness is distinct from clean installation proof."
+  },
+  "x-history": {
+    "protected_collections": [
+      "releases",
+      "release_history",
+      "release_acceptances",
+      "release_exports",
+      "release_archives",
+      "project_phases"
+    ],
+    "release_history_id": "{release_id}:{release_revision}",
+    "acceptance_and_export_immutable": true,
+    "event_kinds": [
+      "release.draft.created",
+      "release.candidate.created",
+      "release.accepted",
+      "export.completed",
+      "project.archived",
+      "project.reopened"
+    ]
+  }
+}

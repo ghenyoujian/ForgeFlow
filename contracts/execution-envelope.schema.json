@@ -1,0 +1,421 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attempt_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lease_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workspace_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_route_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "executor_profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resource_profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verification_plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_prefix": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "const": "forgeflow.execution.v1"
+    },
+    "task_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "base_sha": {
+      "type": "string",
+      "pattern": "^([0-9a-fA-F]{40}|[0-9a-fA-F]{64})$"
+    },
+    "context_manifest": {
+      "$ref": "#/$defs/ContextManifestRef"
+    },
+    "write_set": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "prompt_artifact": {
+      "$ref": "#/$defs/ArtifactRef"
+    },
+    "allowed_effects": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "READ_WORKSPACE",
+          "WRITE_DECLARED_PATHS",
+          "RUN_APPROVED_COMMANDS",
+          "REQUEST_APPROVED_MODEL"
+        ]
+      }
+    },
+    "secret_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "enforcement": {
+      "$ref": "#/$defs/Enforcement"
+    },
+    "session_purpose": {
+      "type": "string",
+      "enum": [
+        "PLANNING",
+        "REVIEW",
+        "EXECUTION",
+        "MAIN_AGENT_MODEL_SESSION"
+      ]
+    },
+    "max_model_requests": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "resume_session_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "command": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CommandSpec"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deadline_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "operation_id",
+    "project_id",
+    "task_id",
+    "attempt_id",
+    "lease_id",
+    "worker_id",
+    "workspace_root",
+    "model_route_id",
+    "executor_profile_id",
+    "resource_profile_id",
+    "verification_plan_id",
+    "artifact_prefix",
+    "idempotency_key",
+    "trace_id",
+    "schema_version",
+    "task_revision",
+    "generation",
+    "base_sha",
+    "context_manifest",
+    "write_set",
+    "prompt_artifact",
+    "allowed_effects",
+    "secret_refs",
+    "enforcement",
+    "session_purpose",
+    "max_model_requests",
+    "resume_session_id",
+    "issued_at",
+    "expires_at",
+    "deadline_at"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:forgeflow:execution:v1",
+  "$defs": {
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "sha256"
+      ]
+    },
+    "ContextManifestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        },
+        "mandatory_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rendered_utf8_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "token_estimate": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "tokenizer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "artifact_id",
+        "sha256",
+        "mandatory_paths",
+        "rendered_utf8_bytes",
+        "token_estimate",
+        "tokenizer_id"
+      ]
+    },
+    "CommandSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "program": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "program",
+        "args"
+      ]
+    },
+    "Enforcement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model_budget_mode": {
+          "type": "string",
+          "enum": [
+            "gateway_enforced",
+            "direct_observed"
+          ]
+        },
+        "stage_resource_mode": {
+          "type": "string",
+          "enum": [
+            "TOOL_INTERCEPTED",
+            "ATTEMPT_RESERVATION"
+          ]
+        },
+        "build_capable": {
+          "type": "boolean"
+        },
+        "gateway_coverage_receipt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tool_guard_receipt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attempt_reserved_build_permits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "all_model_routes_covered": {
+          "type": "boolean"
+        },
+        "disabled_tool_entry_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "model_budget_mode",
+        "stage_resource_mode",
+        "build_capable",
+        "gateway_coverage_receipt_id",
+        "tool_guard_receipt_id",
+        "attempt_reserved_build_permits",
+        "all_model_routes_covered",
+        "disabled_tool_entry_ids"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "model_budget_mode": {
+                "const": "gateway_enforced"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "all_model_routes_covered": {
+                "const": true
+              },
+              "gateway_coverage_receipt_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "stage_resource_mode": {
+                "const": "TOOL_INTERCEPTED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "tool_guard_receipt_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "build_capable": {
+                "const": true
+              },
+              "stage_resource_mode": {
+                "const": "ATTEMPT_RESERVATION"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attempt_reserved_build_permits": {
+                "minimum": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "title": "ForgeFlow canonical ExecutionEnvelope",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "session_purpose": {
+            "enum": [
+              "PLANNING",
+              "REVIEW"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "write_set": {
+            "maxItems": 0
+          },
+          "allowed_effects": {
+            "not": {
+              "contains": {
+                "const": "WRITE_DECLARED_PATHS"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

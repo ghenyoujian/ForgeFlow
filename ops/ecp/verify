@@ -1,0 +1,12 @@
+#!/usr/bin/python3 -IS
+"""Executable launcher for the offline ECP verifier."""
+from pathlib import Path
+import runpy
+import sys
+
+# Isolated interpreter mode omits the script directory. The repository's own
+# modules are needed; never import from caller-provided PYTHONPATH or cwd.
+sys.dont_write_bytecode = True
+script_dir = Path(__file__).resolve().parent
+sys.path.insert(0, str(script_dir))
+runpy.run_path(str(script_dir / "verify.py"), run_name="__main__")

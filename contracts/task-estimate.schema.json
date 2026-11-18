@@ -1,0 +1,134 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project_id",
+    "estimate_id",
+    "task_id",
+    "task_revision",
+    "estimate_version",
+    "effort",
+    "revision"
+  ],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Must equal the project path parameter."
+    },
+    "estimate_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "New document identity for each appended estimate; no imposed ID format."
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Must identify a current task in this project."
+    },
+    "task_revision": {
+      "$ref": "urn:forgeflow:task-estimate:v1#/$defs/Unsigned64",
+      "description": "Must equal the current authoritative task revision."
+    },
+    "estimate_version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 18446744073709551615,
+      "description": "Exactly one plus the retained maximum for this task_id and task_revision; first version is 1."
+    },
+    "effort": {
+      "$ref": "urn:forgeflow:task-estimate:v1#/$defs/EffortEstimate"
+    },
+    "duration_hours": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0,
+      "maximum": 1000000,
+      "default": null,
+      "description": "Optional reviewed elapsed duration in hours, independent of effort. Omission and null both mean unknown."
+    },
+    "revision": {
+      "$ref": "urn:forgeflow:task-estimate:v1#/$defs/Unsigned64",
+      "description": "Required DTO field. The server replaces it with document revision 1 when creating a new estimate."
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:forgeflow:task-estimate:v1",
+  "title": "TaskEstimate",
+  "description": "POST /api/v1/projects/{project}/task-estimates body and persisted record. Owner-authenticated append-only authority command requiring Idempotency-Key. Unknown fields are rejected. Database history, current-task binding and cross-field effort ordering are validated by the server.",
+  "$defs": {
+    "Unsigned64": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "EffortEstimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "optimistic_hours",
+        "likely_hours",
+        "pessimistic_hours",
+        "rationale",
+        "source"
+      ],
+      "properties": {
+        "optimistic_hours": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "likely_hours": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "pessimistic_hours": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "rationale": {
+          "type": "string",
+          "pattern": "\\S",
+          "description": "Must contain a non-whitespace character."
+        },
+        "source": {
+          "const": "USER_REVIEWED_THREE_POINT"
+        }
+      },
+      "description": "Reviewed work effort in hours. The server also checks optimistic_hours <= likely_hours <= pessimistic_hours; JSON Schema does not express this cross-field ordering. Effort is not elapsed calendar duration."
+    },
+    "TaskEstimateCommandReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data",
+        "operation_id",
+        "replayed",
+        "request_id",
+        "source"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "urn:forgeflow:task-estimate:v1#"
+        },
+        "operation_id": {
+          "type": "string"
+        },
+        "replayed": {
+          "type": "boolean"
+        },
+        "request_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "const": "postgres"
+        }
+      }
+    }
+  }
+}

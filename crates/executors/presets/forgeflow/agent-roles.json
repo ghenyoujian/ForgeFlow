@@ -1,0 +1,15 @@
+{
+  "schema_version": "forgeflow.agent-roles.v1",
+  "project_id": null,
+  "authority": "TEMPLATE_REQUIRES_PROJECT_MATERIALIZATION",
+  "positions": 0,
+  "teams": [],
+  "roster": [],
+  "generic_presets": {
+    "lead": "forgeflow-lead-v1",
+    "owner": "forgeflow-owner-v1",
+    "implementer": "forgeflow-implementer-v1",
+    "verifier": "forgeflow-verifier-v1"
+  },
+  "qualification": "NOT_RUN"
+}

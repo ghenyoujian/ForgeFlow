@@ -1,0 +1,11 @@
+.effort-estimate { margin-top: 16px; padding: 20px; border-top: 1px solid var(--line); }
+.effort-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.effort-heading h3 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 600; }
+.effort-version { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.effort-estimate .form-grid { padding: 12px 0; }
+.effort-estimate p { margin: 12px 0; line-height: 1.65; }
+.effort-note { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel3); font-size: 12px; }
+.effort-summary { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; padding: 16px; background: var(--panel2); border-radius: 10px; }
+.effort-summary strong { font-size: 21px; font-weight: 550; font-variant-numeric: tabular-nums; }
+.effort-summary span { font-size: 12px; color: var(--muted); }
+@media (max-width: 600px) { .effort-estimate { padding: 16px; } }
